@@ -97,38 +97,43 @@ This system aims to:
 ## **7. Front end Designing**
 
 #### HR Home Page
+
 ![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/HR%20Front%20end%20design.png)
 
 #### HR Leave Page
+
 ![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/HR%20Frontend%20Leave%20page.png)
 
 #### HR Leave Page
+
 ![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/HR%20Frontend%20Calendar%20page.png)
 
 #### Employee Dashboard
+
 ![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/Employee%20frontend.png)
 
 ## **8. API calls**
 
 ### **_At a glance_ APIs**
 
-| Method   | Endpoint                | Description                       | Request                           | Response                                                                                                                                                                                                          | Response Code |
-| -------- | ----------------------- | --------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| **GET**  | `/api/dashboard`        | Get the data for at a glance page | ---                               | {name, dept, leave balance, leave taken, status}                                                                                                                                                                  | {200,500}     |
-| **GET**  | `/api/dashboard/:empId` | Get the details for employee      | ---                               | {Employee ID, Name, Department, Designation / Role, Email / Contact, Joining Date, Leave Balance, Leaves Taken, Current Leave Status, Last Leave Date, Upcoming Leave Requests, Attendance / Presence (optional)} | {200,500}     |
-| **GET**  | `/api/report/:empId`    | Get report for the employee       | ---                               | {file?, email redirection?}                                                                                                                                                                                       | {200,500}     |
-| **POST** | `/api/add`              | Add a new employee to the DB      | {all data needed for an employee} | {emp id, email, passwd, mail redirection?}                                                                                                                                                                        | {201,500}     |
+| Method     | Endpoint               | Description                       | Request                           | Response                                                                                                                                                                                                          | Response Code |
+| ---------- | ---------------------- | --------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| **GET**    | `/api/Employee`        | Get the data for at a glance page | ---                               | {name, dept, leave balance, leave taken, status}                                                                                                                                                                  | {200,500}     |
+| **GET**    | `/api/Employee/:empId` | Get the details for employee      | ---                               | {Employee ID, Name, Department, Designation / Role, Email / Contact, Joining Date, Leave Balance, Leaves Taken, Current Leave Status, Last Leave Date, Upcoming Leave Requests, Attendance / Presence (optional)} | {200,500}     |
+| **POST**   | `/api/Employee`        | Add a new employee to the DB      | {all data needed for an employee} | {emp id, email, passwd, mail redirection?}                                                                                                                                                                        | {201,500}     |
+| **PUT**    | `/api/Employee/:empId` | Edit the details for employee     | {Required data as the Database}   | {confirmation text}                                                                                                                                                                                               | {200,500}     |
+| **DELETE** | `/api/Employee/:empId` | Delete the employee               | ---                               | {confirmation text}                                                                                                                                                                                               | {200,500}     |
 
 ### **Leave APIs**
 
-| Method   | Endpoint                | Description                                                      | Request                           | Response                            | Response Code |
-| -------- | ----------------------- | ---------------------------------------------------------------- | --------------------------------- | ----------------------------------- | ------------- |
-| **GET**  | `/api/leave`            | Get the data for pending page                                    | ---                               | {Emp name, start date, no. of days} | {200,500}     |
-| **GET**  | `/api/leave/:requestId` | Get the details for the request                                  | ---                               | {request DB schema}                 | {200,500}     |
-| **GET**  | `/api/leave/:empId`     | Get the details for the request of specific employee             | ---                               | {request DB schema}                 | {200,500}     |
-| **POST** | `/api/leave/add`        | Add a new leave request to the DB                                | {all data needed for an employee} | {message}                           | {201,500}     |
-| **PUT**  | `/api/leave/:requestId` | Accept or reject request                                         | {response:bool, note?:str}        | {mail redirection?}                 | {201,500}     |
-| **GET**  | `/api/leave/isAny`      | checks if there is any pending requests left for the HR to check | ---                               | {response: Bool}                    | {200,500}     |
+| Method   | Endpoint                     | Description                                                      | Request                           | Response                            | Response Code |
+| -------- | ---------------------------- | ---------------------------------------------------------------- | --------------------------------- | ----------------------------------- | ------------- |
+| **GET**  | `/api/leave`                 | Get the data for pending page                                    | ---                               | {Emp name, start date, no. of days} | {200,500}     |
+| **GET**  | `/api/leave/:requestId`      | Get the details for the request                                  | ---                               | {request DB schema}                 | {200,500}     |
+| **GET**  | `/api/leave/employee/:empId` | Get the details for the request of specific employee             | ---                               | {request DB schema}                 | {200,500}     |
+| **POST** | `/api/leave`                 | Add a new leave request to the DB                                | {all data needed for an employee} | {message}                           | {201,500}     |
+| **PUT**  | `/api/leave/:requestId`      | Accept or reject request                                         | {response:bool, note?:str}        | {mail redirection?}                 | {201,500}     |
+| **GET**  | `/api/leave/isAny`           | checks if there is any pending requests left for the HR to check | ---                               | {response: Bool}                    | {200,500}     |
 
 ### **Calender APIs**
 
