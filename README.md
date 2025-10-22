@@ -96,7 +96,17 @@ This system aims to:
 
 ## **7. Front end Designing**
 
-Image reference --
+#### HR Home Page
+![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/HR%20Front%20end%20design.png)
+
+#### HR Leave Page
+![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/HR%20Frontend%20Leave%20page.png)
+
+#### HR Leave Page
+![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/HR%20Frontend%20Calendar%20page.png)
+
+#### Employee Dashboard
+![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/Employee%20frontend.png)
 
 ## **8. API calls**
 
