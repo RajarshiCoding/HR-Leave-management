@@ -96,6 +96,8 @@ This system aims to:
 
 ## **7. Front end Designing**
 
+Image reference --
+
 ## **8. API calls**
 
 ### **_At a glance_ APIs**
