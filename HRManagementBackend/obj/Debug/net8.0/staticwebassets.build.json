@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "a7+aHjpLFac7KWprQ0zOfRU34RdHzTGQo0vSqKWciTg=",
+  "Source": "HRManagementBackend",
+  "BasePath": "_content/HRManagementBackend",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
