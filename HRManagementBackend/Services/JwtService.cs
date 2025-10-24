@@ -1,48 +1,37 @@
-using HRManagementBackend.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using HRManagementBackend.Models;
+using Microsoft.IdentityModel.Tokens;
 
-namespace HRManagementBackend.Services
+public class JwtService
 {
-    public class JwtService
+    private readonly IConfiguration _config;
+
+    public JwtService(IConfiguration config)
     {
-        private readonly IConfiguration _config;
+        _config = config;
+    }
 
-        public JwtService(IConfiguration config)
+    public string GenerateToken(Employee employee)
+    {
+        var claims = new List<Claim>
         {
-            _config = config;
-        }
+            new Claim(ClaimTypes.Name, employee.Email),
+            new Claim(ClaimTypes.Role, employee.Designation)
+        };
 
-        public string GenerateToken(Employee employee, string role)
-        {
-            var secretKey = _config["JwtSettings:SecretKey"];
-            var issuer = _config["JwtSettings:Issuer"];
-            var audience = _config["JwtSettings:Audience"];
-            var expiryMinutes = int.Parse(_config["JwtSettings:ExpiryMinutes"]);
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddHours(4),
+            signingCredentials: creds
+        );
 
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, employee.Email),
-                new Claim("role", role),
-                new Claim("empId", employee.EmpId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(expiryMinutes),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

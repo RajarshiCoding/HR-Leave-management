@@ -28,5 +28,10 @@ namespace HRManagementBackend.Models
         public int? LeaveTaken { get; set; }
         public string? Status { get; set; }
     }
+    public class EmployeeLoginDto
+    {
+        public required string Email { get; set; }
+        public required string Password { get; set; }
+    }
 
 }

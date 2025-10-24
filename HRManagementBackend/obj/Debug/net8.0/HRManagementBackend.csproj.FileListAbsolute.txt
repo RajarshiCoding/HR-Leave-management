@@ -42,3 +42,16 @@ D:\Rajarshi\HR Leave file\HRManagementBackend\obj\Debug\net8.0\refint\HRManageme
 D:\Rajarshi\HR Leave file\HRManagementBackend\obj\Debug\net8.0\HRManagementBackend.pdb
 D:\Rajarshi\HR Leave file\HRManagementBackend\obj\Debug\net8.0\HRManagementBackend.genruntimeconfig.cache
 D:\Rajarshi\HR Leave file\HRManagementBackend\obj\Debug\net8.0\ref\HRManagementBackend.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\Microsoft.Extensions.WebEncoders.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\System.Security.Cryptography.Xml.dll
+D:\Rajarshi\HR Leave file\HRManagementBackend\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
