@@ -49,6 +49,7 @@ This system aims to:
 | **Backend**         | .NET 8 Web API + Dapper |
 | **Database**        | PostgreSQL              |
 | **Authentication**  | JWT Tokens              |
+| **Authorization**   | BCrypt                  |
 | **Version Control** | GitHub                  |
 | **Testing Tools**   | Postman                 |
 
@@ -104,7 +105,7 @@ This system aims to:
 
 ![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/HR%20Frontend%20Leave%20page.png)
 
-#### HR Leave Page
+#### HR Calender Page
 
 ![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/HR%20Frontend%20Calendar%20page.png)
 
@@ -113,6 +114,13 @@ This system aims to:
 ![](https://github.com/RajarshiCoding/HR-Leave-management/blob/ee065e2f4dd8599988dc71d85b892902c294e247/src/Employee%20frontend.png)
 
 ## **8. API calls**
+
+## **Auth API**
+
+| Method   | Endpoint             | Description                   | Request                                                   | Response     | Response Code     |
+| -------- | -------------------- | ----------------------------- | --------------------------------------------------------- | ------------ | ----------------- |
+| **POST** | `/api/auth/login`    | Gives token if authenticated  | {email, password}                                         | {token}      | {400,401,403,200} |
+| **POST** | `/api/auth/register` | Stores user data using BCrypt | {name, email, password, department, designation, contact} | {BadRequest} | {400,200}         |
 
 ### **_At a glance_ APIs**
 
@@ -156,7 +164,6 @@ This system aims to:
 | **name**          | VARCHAR(100) | NOT NULL             | Employee full name                  |
 | **email**         | VARCHAR(100) | UNIQUE, NOT NULL     | Employee email                      |
 | **password_hash** | TEXT         | NOT NULL             | Hashed password                     |
-| **password_salt** | TEXT         | NOT NULL             | Hash Salt                           |
 | **department**    | VARCHAR(100) | NOT NULL             | Department name                     |
 | **designation**   | VARCHAR(100) |                      | Employee designation / role         |
 | **contact**       | VARCHAR(20)  |                      | Contact number                      |
