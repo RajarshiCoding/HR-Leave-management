@@ -86,7 +86,7 @@ namespace HRManagementBackend.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim("empId", user.EmpId.ToString()),
-                new Claim(ClaimTypes.Role, user.Department)
+                new Claim(ClaimTypes.Role, user.Designation)
             };
 
             var token = new JwtSecurityToken(
