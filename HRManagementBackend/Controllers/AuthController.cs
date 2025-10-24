@@ -30,8 +30,6 @@ namespace HRManagementBackend.Controllers
                 return BadRequest(new { message = "Email and password are required" });
 
             var token = await _authService.LoginAsync(dto.Email, dto.Password);
-
-            Console.WriteLine(token);
             
             if (token == null)
                 return Unauthorized(new { message = "Invalid credentials" });

@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using BCrypt.Net;
 
 namespace HRManagementBackend.Services
 {
@@ -29,7 +30,7 @@ namespace HRManagementBackend.Services
             using var connection = _context.CreateConnection();
             var user = await connection.QueryFirstOrDefaultAsync<Employee>(query, new { Email = email });
 
-            if (user == null || user.PasswordHash != password) // Replace with hashing in real projects
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password,user.PasswordHash)) 
                 return null;
 
             return GenerateJwtToken(user);
@@ -38,10 +39,15 @@ namespace HRManagementBackend.Services
         public async Task<bool> RegisterAsync(RegisterRequest request)
         {
             var checkQuery = @"SELECT COUNT(*) FROM employees WHERE ""Email"" = @Email";
+            // var insertQuery = @"
+            //     INSERT INTO employees 
+            //     (""Name"", ""Email"", ""PasswordHash"", ""PasswordSalt"", ""Department"",""Designation"",""Contact"", ""Status"")
+            //     VALUES (@Name, @Email, @PasswordHash, @PasswordSalt, @Department, @Designation, @Contact, 'Active')
+            // ";
             var insertQuery = @"
                 INSERT INTO employees 
-                (""Name"", ""Email"", ""PasswordHash"", ""PasswordSalt"", ""Department"",""Designation"", ""Status"")
-                VALUES (@Name, @Email, @PasswordHash, @PasswordSalt, @Department, @Designation, 'Active')
+                (""Name"", ""Email"", ""PasswordHash"", ""Department"",""Designation"",""Contact"", ""Status"")
+                VALUES (@Name, @Email, @PasswordHash, @Department, @Designation, @Contact, 'Active')
             ";
 
             using var connection = _context.CreateConnection();
@@ -51,17 +57,20 @@ namespace HRManagementBackend.Services
                 return false;
 
             // ✅ Generate password hash and salt
-            var salt = Guid.NewGuid().ToString("N"); // or a more secure random generator
-            var passwordHash = Convert.ToBase64String(Encoding.UTF8.GetBytes(request.Password + salt));
+            // var salt = Guid.NewGuid().ToString("N"); // or a more secure random generator
+            // var passwordHash = Convert.ToBase64String(Encoding.UTF8.GetBytes(request.Password + salt));
+
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             await connection.ExecuteAsync(insertQuery, new
             {
                 request.Name,
                 request.Email,
                 PasswordHash = passwordHash,
-                PasswordSalt = salt,
+                // PasswordSalt = salt,
                 request.Department,
-                request.Designation
+                request.Designation,
+                request.Contact
             });
 
             return true;
