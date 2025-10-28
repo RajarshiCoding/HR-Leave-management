@@ -4,40 +4,61 @@ import { Calendar } from "@/components/ui/calendar";
 import { Button } from "./ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 
 export default function CalendarPage() {
-  const holidays = [
-    new Date(2025, 0, 1), // Jan 1
-    new Date(2025, 9, 26), // Jan 26
-    new Date(2025, 2, 29), // Mar 29
-  ];
-
+  const [holidays, setHolidays] = React.useState<any[]>([]);
+  const [holidayList, setHolidayList] = React.useState<any[]>([]);
+  const [holidayTitle, setHolidayTitle] = React.useState<string>("Holiday");
   const [date, setDate] = React.useState<Date | undefined>(
     new Date(2025, 9, 28)
   );
   const [isHoliday, setIsHoliday] = React.useState<boolean>(false);
 
+  const fetchHolidays = async () => {
+    try {
+      const res = await fetch("http://localhost:5062/api/Holiday");
+      const data = await res.json();
+
+      setHolidays(data);
+      const parsedDates = data.map((h: any) => new Date(h.date));
+      setHolidayList(parsedDates);
+    } catch (error) {
+      console.error("Error fetching holidays:", error);
+    }
+  };
+  React.useEffect(() => {
+    fetchHolidays();
+  }, []);
+
   // ✅ Function to check if selected date is a holiday
-  const checkIfHoliday = (selectedDate: Date | undefined) => {
+  const checkIfHoliday = (selectedDate?: Date) => {
     if (!selectedDate) return;
-    const match = holidays.some(
-      (holiday) =>
-        holiday.getDate() === selectedDate.getDate() &&
-        holiday.getMonth() === selectedDate.getMonth() &&
-        holiday.getFullYear() === selectedDate.getFullYear()
-    );
-    setIsHoliday(match);
+
+    const match = holidays.find((holiday) => {
+      const holidayDate = new Date(holiday.date);
+      return (
+        holidayDate.getDate() === selectedDate.getDate() &&
+        holidayDate.getMonth() === selectedDate.getMonth() &&
+        holidayDate.getFullYear() === selectedDate.getFullYear()
+      );
+    });
+
+    setIsHoliday(!!match);
+    setHolidayTitle(match ? match.title : "");
   };
 
   // ✅ Run check whenever user selects a new date
   React.useEffect(() => {
     checkIfHoliday(date);
+    // console.log(holidayTitle);
   }, [date]);
 
   return (
@@ -53,7 +74,7 @@ export default function CalendarPage() {
           className="rounded-lg border [--cell-size:--spacing(11)] md:[--cell-size:--spacing(12)] "
           buttonVariant="ghost"
           modifiers={{
-            holiday: holidays,
+            holiday: holidayList,
           }}
           modifiersClassNames={{
             holiday:
@@ -70,12 +91,107 @@ export default function CalendarPage() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Edit profile</DialogTitle>
+                  <DialogTitle>Add holiday</DialogTitle>
                   <DialogDescription>
-                    Make changes to your profile here. Click save when
-                    you&apos;re done.
+                    Select the date to be added
                   </DialogDescription>
                 </DialogHeader>
+
+                {/* 🗓️ Form for adding holiday */}
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+
+                    if (!date) return alert("Please select a date first!");
+
+                    const formData = new FormData(e.currentTarget);
+                    const title = formData.get("title") as string;
+                    const description = formData.get("description") as string;
+
+                    if (!title.trim() || !description.trim()) {
+                      alert("Title and Description are required.");
+                      return;
+                    }
+
+                    try {
+                      const res = await fetch(
+                        "http://localhost:5062/api/Holiday",
+                        {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({
+                            title,
+                            description,
+                            date: new Date(date.getTime() + 19800000)
+                              .toISOString()
+                              .split("T")[0],
+                          }),
+                        }
+                      );
+
+                      if (!res.ok) throw new Error("Failed to add holiday");
+
+                      const newHoliday = await res.json();
+
+                      // ✅ Update holiday lists
+                      // setHolidays((prev) => [...prev, newHoliday]);
+                      // setHolidayList((prev) => [
+                      //   ...prev,
+                      //   new Date(newHoliday.date),
+                      // ]);
+
+                      fetchHolidays();
+
+                      alert("Holiday added successfully!");
+                    } catch (error) {
+                      console.error("Error adding holiday:", error);
+                    }
+                  }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Date:
+                    </label>
+                    <p className="text-gray-800 font-semibold">
+                      {date ? date.toDateString() : "No date selected"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Title:
+                    </label>
+                    <input
+                      name="title"
+                      type="text"
+                      required
+                      className="mt-1 w-full rounded-md border border-gray-300 p-2"
+                      placeholder="Enter holiday title"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Description:
+                    </label>
+                    <textarea
+                      name="description"
+                      required
+                      className="mt-1 w-full rounded-md border border-gray-300 p-2"
+                      placeholder="Enter holiday description"
+                    />
+                  </div>
+
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button type="submit">Save changes</Button>
+                  </DialogFooter>
+                </form>
               </DialogContent>
             </Dialog>
             <Button variant={"outline"} disabled={!isHoliday}>
@@ -97,7 +213,7 @@ export default function CalendarPage() {
                     isHoliday ? "text-green-600" : "text-gray-500"
                   }`}
                 >
-                  {isHoliday ? "🎉 This is a holiday!" : ""}
+                  {isHoliday ? holidayTitle : ""}
                 </p>
               </>
             ) : (
