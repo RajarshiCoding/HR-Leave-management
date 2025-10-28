@@ -1,0 +1,99 @@
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useLocation, useNavigate } from "react-router-dom";
+import { UserRound, Home, CalendarDays, Plane } from "lucide-react";
+
+export function Sidebar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate("/", { replace: false });
+    }
+  };
+  useEffect(() => {
+    const fetchEmployeeData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.log("No token found in localStorage");
+          return;
+        }
+
+        const response = await fetch("http://localhost:5062/api/employee", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        // const data = await response.json();
+        // console.log("Employee data:", data);
+      } catch (err: any) {
+        console.error("Fetch error:", err.message);
+      }
+    };
+
+    fetchEmployeeData();
+  }, []);
+
+  const username = localStorage.getItem("name") || "User";
+
+  return (
+    <aside className="h-screen w-64 bg-white shadow-md flex flex-col justify-between py-6">
+      {/* Top Section */}
+      <div>
+        <div className="px-6 pb-6 text-2xl font-semibold text-gray-800 border-b">
+          Hi, {username}
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="flex flex-col mt-6 space-y-2 px-4">
+          <Button
+            variant={location.pathname === "/dashboard" ? "default" : "ghost"}
+            className="justify-start"
+            onClick={() => navigate("/dashboard")}
+          >
+            <Home className="mr-2 h-5 w-5" /> Home
+          </Button>
+
+          <Button
+            variant={location.pathname === "/leave" ? "default" : "ghost"}
+            className="justify-start"
+            onClick={() => navigate("/leave")}
+          >
+            <Plane className="mr-2 h-5 w-5" /> Leave
+          </Button>
+
+          <Button
+            variant={location.pathname === "/calendar" ? "default" : "ghost"}
+            className="justify-start"
+            onClick={() => navigate("/calendar")}
+          >
+            <CalendarDays className="mr-2 h-5 w-5" /> Calendar
+          </Button>
+        </div>
+      </div>
+
+      {/* Bottom Profile Icon */}
+      <div className="px-6">
+        <Button
+          variant="outline"
+          className="rounded-full w-12 h-12 p-0 flex items-center justify-center"
+          onClick={handleLogout}
+        >
+          <UserRound className="h-6 w-6" />
+        </Button>
+      </div>
+    </aside>
+  );
+}
