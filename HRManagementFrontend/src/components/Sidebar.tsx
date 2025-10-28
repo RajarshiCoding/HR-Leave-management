@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
-import { UserRound, Home, CalendarDays, Plane } from "lucide-react";
+import { UserRound, Home, CalendarDays, Plane, LogOut } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -86,13 +91,21 @@ export function Sidebar() {
 
       {/* Bottom Profile Icon */}
       <div className="px-6">
-        <Button
-          variant="outline"
-          className="rounded-full w-12 h-12 p-0 flex items-center justify-center"
-          onClick={handleLogout}
-        >
-          <UserRound className="h-6 w-6" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button
+              variant="outline"
+              className="rounded-full w-12 h-12 p-0 flex items-center justify-center"
+              onClick={handleLogout}
+            >
+              {/* <UserRound className="h-6 w-6" /> */}
+              <LogOut className="h-6 w-6" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Click to log out</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </aside>
   );
