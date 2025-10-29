@@ -2,6 +2,7 @@ using HRManagementBackend.Models;
 using HRManagementBackend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace HRManagementBackend.Controllers
@@ -10,18 +11,14 @@ namespace HRManagementBackend.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly AuthService _authService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(AuthService authService)
         {
             _authService = authService;
         }
 
-        /// <summary>
-        /// Authenticate user and generate JWT token.
-        /// </summary>
-        /// <param name="dto">Login credentials (Email, Password)</param>
-        /// <returns>JWT token if successful</returns>
+
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] EmployeeLoginDto dto)
@@ -30,6 +27,8 @@ namespace HRManagementBackend.Controllers
                 return BadRequest(new { message = "Email and password are required" });
 
             var token = await _authService.LoginAsync(dto.Email, dto.Password);
+            var name = await _authService.GetNameAsync(dto.Email);
+            // var name = await _authService
             
             if (token == null)
                 return Unauthorized(new { message = "Invalid credentials" });
@@ -37,15 +36,12 @@ namespace HRManagementBackend.Controllers
             return Ok(new
             {
                 message = "Login successful",
-                token
+                token,
+                name
             });
         }
 
-        /// <summary>
-        /// Register a new employee user.
-        /// </summary>
-        /// <param name="request">User registration data</param>
-        /// <returns>Success message</returns>
+
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
@@ -59,6 +55,19 @@ namespace HRManagementBackend.Controllers
                 return BadRequest(new { message = "Email already exists" });
 
             return Ok(new { message = "User registered successfully" });
+        }
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Authorize()
+        {
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+            var name = User.Identity?.Name;
+            return Ok(new
+                {
+                    message = "Authorized",
+                    role,
+                    name
+                });
         }
     }
 }

@@ -13,7 +13,7 @@ using BCrypt.Net;
 
 namespace HRManagementBackend.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService
     {
         private readonly DapperContext _context;
         private readonly IConfiguration _config;
@@ -30,11 +30,22 @@ namespace HRManagementBackend.Services
             using var connection = _context.CreateConnection();
             var user = await connection.QueryFirstOrDefaultAsync<Employee>(query, new { Email = email });
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(password,user.PasswordHash)) 
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
                 return null;
 
             return GenerateJwtToken(user);
         }
+        
+        public async Task<string?> GetNameAsync(string email)
+        {
+            const string query = @"SELECT ""Name"" FROM employees WHERE ""Email"" = @Email";
+
+            using var connection = _context.CreateConnection();
+            var name = await connection.QueryFirstOrDefaultAsync<string>(query, new { Email = email });
+
+            return name;
+        }
+
 
         public async Task<bool> RegisterAsync(RegisterRequest request)
         {

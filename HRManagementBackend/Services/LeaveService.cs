@@ -17,7 +17,9 @@ namespace HRManagementBackend.Services
         // Get all leave requests
         public async Task<IEnumerable<LeaveRequest>> GetAllLeavesAsync()
         {
-            var query = "select * from leave_requests";
+            var query = "SELECT lr.*, e.\"Name\" FROM leave_requests lr JOIN employees e ON lr.\"EmpId\" = e.\"EmpId\" WHERE lr.\"Status\" = 'Pending';";
+
+
             // Console.WriteLine(query);
             using var connection = _context.CreateConnection();
             return await connection.QueryAsync<LeaveRequest>(query);
