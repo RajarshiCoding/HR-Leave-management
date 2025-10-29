@@ -134,7 +134,7 @@ export default function LeavePage() {
                     <TableCell className="text-center">
                       {emp.noOfDays}
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="text-center space-x-1.5">
                       <LeaveRequestDialog
                         onClose={fetchEmployeeData}
                         requestId={emp.requestId}
@@ -143,6 +143,7 @@ export default function LeavePage() {
                       <Button
                         onClick={() => {
                           processLeaveRequest(emp.requestId, "rejected");
+                          window.location.reload();
                         }}
                         variant={"outline"}
                         className="text-red-600 border-red-600 hover:bg-red-300 hover:text-red-900"
@@ -153,6 +154,7 @@ export default function LeavePage() {
                       <Button
                         onClick={() => {
                           processLeaveRequest(emp.requestId, "approved");
+                          window.location.reload();
                         }}
                         variant={"outline"}
                         className="text-green-600 border-green-600 hover:bg-green-300 hover:text-green-900"
