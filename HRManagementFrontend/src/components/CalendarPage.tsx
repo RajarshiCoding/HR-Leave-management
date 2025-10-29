@@ -16,7 +16,9 @@ import {
 export default function CalendarPage() {
   const [holidays, setHolidays] = React.useState<any[]>([]);
   const [holidayList, setHolidayList] = React.useState<any[]>([]);
-  const [holidayTitle, setHolidayTitle] = React.useState<string>("Holiday");
+  const [holidayTitle, setHolidayTitle] = React.useState<string>("");
+  const [holidayDescription, setHolidayDescription] =
+    React.useState<string>("");
   const [date, setDate] = React.useState<Date | undefined>(
     new Date(2025, 9, 28)
   );
@@ -34,9 +36,10 @@ export default function CalendarPage() {
       console.error("Error fetching holidays:", error);
     }
   };
+
   React.useEffect(() => {
     fetchHolidays();
-  }, []);
+  }, [date]);
 
   // ✅ Function to check if selected date is a holiday
   const checkIfHoliday = (selectedDate?: Date) => {
@@ -53,6 +56,7 @@ export default function CalendarPage() {
 
     setIsHoliday(!!match);
     setHolidayTitle(match ? match.title : "");
+    setHolidayDescription(match ? match.description : "");
   };
 
   // ✅ Run check whenever user selects a new date
@@ -133,7 +137,7 @@ export default function CalendarPage() {
 
                       if (!res.ok) throw new Error("Failed to add holiday");
 
-                      const newHoliday = await res.json();
+                      // const newHoliday = await res.json();
 
                       // ✅ Update holiday lists
                       // setHolidays((prev) => [...prev, newHoliday]);
@@ -142,7 +146,7 @@ export default function CalendarPage() {
                       //   new Date(newHoliday.date),
                       // ]);
 
-                      fetchHolidays();
+                      setHolidayTitle(title);
 
                       alert("Holiday added successfully!");
                     } catch (error) {
@@ -194,12 +198,188 @@ export default function CalendarPage() {
                 </form>
               </DialogContent>
             </Dialog>
-            <Button variant={"outline"} disabled={!isHoliday}>
-              Edit
-            </Button>
-            <Button variant={"outline"} disabled={!isHoliday}>
-              Delete
-            </Button>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant={"outline"} disabled={!isHoliday}>
+                  Edit
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Edit holiday</DialogTitle>
+                  <DialogDescription>Edit the contents</DialogDescription>
+                </DialogHeader>
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!date) return alert("Please select a date first!");
+                    console.log(
+                      new Date(date.getTime() + 19800000)
+                        .toISOString()
+                        .split("T")[0]
+                    );
+                    const formData = new FormData(e.currentTarget);
+                    const title =
+                      (formData.get("title") as string) || holidayTitle;
+                    const description =
+                      (formData.get("description") as string) ||
+                      holidayDescription;
+
+                    // if (!title.trim()) {
+                    //   title = holidayTitle;
+                    // }
+
+                    try {
+                      const res = await fetch(
+                        `http://localhost:5062/api/Holiday/${
+                          new Date(date.getTime() + 19800000)
+                            .toISOString()
+                            .split("T")[0]
+                        }`,
+                        {
+                          method: "PUT",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({
+                            title,
+                            description,
+                          }),
+                        }
+                      );
+
+                      if (!res.ok) throw new Error("Failed to add holiday");
+
+                      fetchHolidays();
+
+                      alert("Holiday edited successfully!");
+                    } catch (error) {
+                      console.error("Error adding holiday:", error);
+                    }
+                  }}
+                >
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Date:
+                    </label>
+                    <p className="text-gray-800 font-semibold">
+                      {date ? date.toDateString() : "No date selected"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Title:
+                    </label>
+                    <input
+                      name="title"
+                      type="text"
+                      className="mt-1 w-full rounded-md border border-gray-300 p-2"
+                      placeholder={holidayTitle}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Description:
+                    </label>
+                    <textarea
+                      name="description"
+                      className="mt-1 w-full rounded-md border border-gray-300 p-2"
+                      placeholder={holidayDescription}
+                    />
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button type="submit">Edit changes</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant={"outline"} disabled={!isHoliday}>
+                  Delete
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Delete Holiday</DialogTitle>
+                  <DialogDescription>
+                    Are you sure you want to delete this holiday? This action
+                    cannot be undone.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Date:
+                    </label>
+                    <p className="text-gray-800 font-semibold">
+                      {date ? date.toDateString() : "No date selected"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Title:
+                    </label>
+                    <p className="text-gray-800 font-semibold">
+                      {holidayTitle}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Description:
+                    </label>
+                    <p className="text-gray-800 font-semibold">
+                      {holidayDescription}
+                    </p>
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                    variant="destructive"
+                    onClick={async () => {
+                      if (!date) return alert("Please select a date first!");
+
+                      try {
+                        const res = await fetch(
+                          `http://localhost:5062/api/Holiday/${
+                            new Date(date.getTime() + 19800000)
+                              .toISOString()
+                              .split("T")[0]
+                          }`,
+                          {
+                            method: "DELETE",
+                          }
+                        );
+
+                        if (!res.ok)
+                          throw new Error("Failed to delete holiday");
+
+                        fetchHolidays();
+                        alert("Holiday deleted successfully!");
+                      } catch (error) {
+                        console.error("Error deleting holiday:", error);
+                      }
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
 
           <div className="flex flex-col justify-center items-center">

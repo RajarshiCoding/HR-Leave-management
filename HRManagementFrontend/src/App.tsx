@@ -4,6 +4,7 @@ import { SignupForm } from "./components/signup-form";
 import Dashboard from "./components/Dashboard";
 import LeavePage from "./components/LeavePage";
 import CalendarPage from "./components/CalendarPage";
+import AddEmployees from "./components/AddEmployees";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leave" element={<LeavePage />} />
         <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/dashboard/addEmp" element={<AddEmployees />} />
       </Routes>
     </Router>
   );

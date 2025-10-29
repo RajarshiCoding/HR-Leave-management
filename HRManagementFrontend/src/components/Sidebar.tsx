@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UserRound, Home, CalendarDays, Plane, LogOut } from "lucide-react";
@@ -11,6 +11,7 @@ import {
 export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isAny, setisAny] = useState<Boolean>();
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
@@ -37,9 +38,22 @@ export function Sidebar() {
           },
         });
 
+        const isAnyResponse = await fetch(
+          "http://localhost:5062/api/leave/isAny",
+          { method: "GET" }
+        );
+
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
+
+        if (!isAnyResponse.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await isAnyResponse.json();
+        console.log(data, data.hasPending);
+        setisAny(data.hasPending);
 
         // const data = await response.json();
         // console.log("Employee data:", data);
@@ -73,7 +87,9 @@ export function Sidebar() {
 
           <Button
             variant={location.pathname === "/leave" ? "default" : "ghost"}
-            className="justify-start"
+            className={`justify-start ${
+              isAny ? "text-red-500 hover:text-red-600" : ""
+            }`}
             onClick={() => navigate("/leave")}
           >
             <Plane className="mr-2 h-5 w-5" /> Leave

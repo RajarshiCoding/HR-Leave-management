@@ -65,7 +65,12 @@ const Dashboard: React.FC = () => {
         {/* Top bar */}
         <div className="flex items-center justify-between w-full h-16 bg-blue-600 px-6 rounded-tr-sm rounded-tl-sm">
           <BasicClock format12={true} />
-          <button className="text-white font-medium cursor-pointer">
+          <button
+            onClick={() => {
+              navigate("/dashboard/addEmp");
+            }}
+            className="text-white font-medium cursor-pointer"
+          >
             <CirclePlus size={42} color="black" />
           </button>
         </div>
@@ -89,29 +94,31 @@ const Dashboard: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {employeeData.map((emp: any) => (
-                  <TableRow onClick={() => GetEmp(emp.empId)}>
-                    <TableCell className="font-medium">{emp.name}</TableCell>
-                    <TableCell className="text-center">
-                      {emp.department}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {emp.leaveBalance}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {emp.leaveTaken}
-                    </TableCell>
-                    <TableCell
-                      className={
-                        emp.status == "Active"
-                          ? "text-green-600"
-                          : "text-red-500"
-                      }
-                    >
-                      {emp.status}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {employeeData
+                  .sort((a, b) => a.empId - b.empId)
+                  .map((emp: any) => (
+                    <TableRow key={emp.empId} onClick={() => GetEmp(emp.empId)}>
+                      <TableCell className="font-medium">{emp.name}</TableCell>
+                      <TableCell className="text-center">
+                        {emp.department}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {emp.leaveBalance}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {emp.leaveTaken}
+                      </TableCell>
+                      <TableCell
+                        className={
+                          emp.status == "Active"
+                            ? "text-green-600"
+                            : "text-red-500"
+                        }
+                      >
+                        {emp.status}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           )}
