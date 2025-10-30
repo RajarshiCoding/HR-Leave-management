@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { useEffect, useState } from "react";
 import { LoginForm } from "./components/login-form";
 import { SignupForm } from "./components/signup-form";
 import Dashboard from "./components/Dashboard";
@@ -7,9 +13,51 @@ import CalendarPage from "./components/CalendarPage";
 import AddEmployees from "./components/AddEmployees";
 
 function App() {
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setAuthChecked(true);
+        setIsAuthenticated(false);
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5062/api/auth", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.status === 200) {
+          const data = await res.json();
+          setIsAuthenticated(true);
+          setUserRole(data.role); // 👈 store backend role
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        setIsAuthenticated(false);
+      } finally {
+        setAuthChecked(true);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  if (!authChecked) return <div>Loading...</div>;
+
   return (
     <Router>
       <Routes>
+        {/* Public Routes */}
         <Route
           path="/"
           element={
@@ -30,10 +78,30 @@ function App() {
             </div>
           }
         />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/leave" element={<LeavePage />} />
-        <Route path="/calendar" element={<CalendarPage />} />
-        <Route path="/dashboard/addEmp" element={<AddEmployees />} />
+
+        {/* Role-based Protected Routes */}
+        {isAuthenticated ? (
+          <>
+            {/* HR Routes */}
+            {userRole === "HR" && (
+              <>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/leave" element={<LeavePage />} />
+                <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/dashboard/addEmp" element={<AddEmployees />} />
+              </>
+            )}
+            {/* Employee Routes */}
+            {userRole === "Employee" && (
+              <Route path="/calendar" element={<CalendarPage />} />
+            )}
+            {/* Anything else redirects to home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </>
+        ) : (
+          // Not logged in
+          <Route path="*" element={<Navigate to="/" replace />} />
+        )}
       </Routes>
     </Router>
   );
