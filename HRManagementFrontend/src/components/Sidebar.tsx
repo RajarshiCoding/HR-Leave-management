@@ -1,17 +1,28 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
-import { UserRound, Home, CalendarDays, Plane, LogOut } from "lucide-react";
+import {
+  UserRound,
+  Home,
+  CalendarDays,
+  Plane,
+  LogOut,
+  ClipboardList,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-export function Sidebar() {
+import { string } from "zod";
+interface SidebarProps {
+  isAdmin?: boolean;
+}
+export function Sidebar({ isAdmin = true }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isAny, setisAny] = useState<Boolean>();
+  const [empId, setEmpId] = useState<string | null>(null);
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
@@ -22,6 +33,8 @@ export function Sidebar() {
     }
   };
   useEffect(() => {
+    const empId = localStorage.getItem("empId");
+    setEmpId(empId);
     const fetchEmployeeData = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -77,31 +90,65 @@ export function Sidebar() {
 
         {/* Navigation Buttons */}
         <div className="flex flex-col mt-6 space-y-2 px-4">
-          <Button
-            variant={location.pathname === "/dashboard" ? "default" : "ghost"}
-            className="justify-start"
-            onClick={() => navigate("/dashboard")}
-          >
-            <Home className="mr-2 h-5 w-5" /> Home
-          </Button>
+          {isAdmin ? (
+            <>
+              <Button
+                variant={
+                  location.pathname === "/dashboard/admin" ? "default" : "ghost"
+                }
+                className="justify-start"
+                onClick={() => navigate("/dashboard/admin")}
+              >
+                <Home className="mr-2 h-5 w-5" /> Home
+              </Button>
 
-          <Button
-            variant={location.pathname === "/leave" ? "default" : "ghost"}
-            className={`justify-start ${
-              isAny ? "text-red-500 hover:text-red-600" : ""
-            }`}
-            onClick={() => navigate("/leave")}
-          >
-            <Plane className="mr-2 h-5 w-5" /> Leave
-          </Button>
+              <Button
+                variant={location.pathname === "/leave" ? "default" : "ghost"}
+                className={`justify-start ${
+                  isAny ? "text-red-500 hover:text-red-600" : ""
+                }`}
+                onClick={() => navigate("/leave")}
+              >
+                <Plane className="mr-2 h-5 w-5" /> Leave
+              </Button>
 
-          <Button
-            variant={location.pathname === "/calendar" ? "default" : "ghost"}
-            className="justify-start"
-            onClick={() => navigate("/calendar")}
-          >
-            <CalendarDays className="mr-2 h-5 w-5" /> Calendar
-          </Button>
+              <Button
+                variant={
+                  location.pathname === "/calendar" ? "default" : "ghost"
+                }
+                className="justify-start"
+                onClick={() => navigate("/calendar")}
+              >
+                <CalendarDays className="mr-2 h-5 w-5" /> Calendar
+              </Button>
+            </>
+          ) : (
+            // employee part
+            <>
+              <Button
+                variant={
+                  location.pathname === "/dashboard/employee"
+                    ? "default"
+                    : "ghost"
+                }
+                className="justify-start"
+                onClick={() => {
+                  navigate("/dashboard/employee");
+                  console.log(empId);
+                }}
+              >
+                <Home className="mr-2 h-5 w-5" /> Home
+              </Button>
+
+              <Button
+                variant={location.pathname === "/track" ? "default" : "ghost"}
+                className="justify-start"
+                onClick={() => navigate("/track")}
+              >
+                <ClipboardList className="mr-2 h-5 w-5" /> Track
+              </Button>
+            </>
+          )}
         </div>
       </div>
 

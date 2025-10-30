@@ -36,15 +36,18 @@ namespace HRManagementBackend.Services
             return GenerateJwtToken(user);
         }
         
-        public async Task<string?> GetNameAsync(string email)
+        public async Task<EmployeeBasicInfo?> GetNameAsync(string email)
         {
-            const string query = @"SELECT ""Name"" FROM employees WHERE ""Email"" = @Email";
+            const string query = @"SELECT ""Name"", ""Designation"" , ""EmpId""
+                                FROM employees 
+                                WHERE ""Email"" = @Email";
 
             using var connection = _context.CreateConnection();
-            var name = await connection.QueryFirstOrDefaultAsync<string>(query, new { Email = email });
+            var result = await connection.QueryFirstOrDefaultAsync<EmployeeBasicInfo>(query, new { Email = email });
 
-            return name;
+            return result;
         }
+
 
 
         public async Task<bool> RegisterAsync(RegisterRequest request)
@@ -78,7 +81,6 @@ namespace HRManagementBackend.Services
                 request.Name,
                 request.Email,
                 PasswordHash = passwordHash,
-                // PasswordSalt = salt,
                 request.Department,
                 request.Designation,
                 request.Contact

@@ -84,10 +84,17 @@ export function SignupForm({
         });
         localStorage.setItem("token", res2.data.token);
         localStorage.setItem("name", name);
+        localStorage.setItem("role", res.data.designation);
         onSigninSuccess?.();
         setTimeout(() => {
           setLoading(false);
-          navigate("/dashboard");
+          {
+            if (res.data.designation === "HR") {
+              navigate("/dashboard/admin");
+            } else if (res.data.designation === "Employee") {
+              navigate("/dashboard/employee");
+            }
+          }
         }, 1000);
       }
     } catch (err: any) {

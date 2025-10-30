@@ -23,13 +23,16 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 
-// ✅ Validation schema
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   department: z.string().min(1, "Department is required"),
   email: z.string().email("Invalid email"),
   designation: z.string().min(1, "Designation is required"),
-  phone: z.string().min(10, "Phone number is required"),
+  phone: z
+    .string()
+    .min(10, "Phone number must be at least 10 digits")
+    .regex(/^[0-9]+$/, "Phone number must contain only digits"),
+  password: z.string().min(1, "Date of Birth is required"),
 });
 
 export default function AddEmployees() {
@@ -43,6 +46,7 @@ export default function AddEmployees() {
       email: "",
       designation: "",
       phone: "",
+      password: "",
     },
   });
 
@@ -53,7 +57,7 @@ export default function AddEmployees() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:5062/api/employee", {
+      const res = await fetch("http://localhost:5062/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +69,7 @@ export default function AddEmployees() {
       if (!res.ok) throw new Error("Failed to add employee");
 
       alert("Employee added successfully!");
-      navigate("/dashboard");
+      navigate("/dashboard/admin");
     } catch (error) {
       console.error("Error adding employee:", error);
       alert("Failed to add employee.");
@@ -83,7 +87,7 @@ export default function AddEmployees() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 w-fill  py-10 bg-white p-8 rounded-lg shadow-md"
+            className="space-y-8 w-full py-10 bg-white p-8 rounded-lg shadow-md"
           >
             {/* Name */}
             <FormField
@@ -93,13 +97,16 @@ export default function AddEmployees() {
                 <FormItem>
                   <FormLabel>Employee Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="John" type="name" {...field} />
+                    <Input placeholder="John Doe" type="text" {...field} />
                   </FormControl>
-                  <FormDescription>Provide the employee email</FormDescription>
+                  <FormDescription>
+                    Provide the employee's full name
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             {/* Department */}
             <FormField
               control={form.control}
@@ -146,7 +153,9 @@ export default function AddEmployees() {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>Provide the employee email</FormDescription>
+                  <FormDescription>
+                    Provide the employee's email
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -198,7 +207,25 @@ export default function AddEmployees() {
                     />
                   </FormControl>
                   <FormDescription>
-                    Provide the employee Contact
+                    Provide the employee's contact number
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* ✅ Date of Birth */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date of Birth</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Select the employee's date of birth
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

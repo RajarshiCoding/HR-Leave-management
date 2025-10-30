@@ -69,7 +69,7 @@ const Dashboard: React.FC = () => {
           <BasicClock format12={true} />
           <button
             onClick={() => {
-              navigate("/dashboard/addEmp");
+              navigate("/dashboard/admin/addEmp");
             }}
             className="text-white font-medium cursor-pointer"
           >

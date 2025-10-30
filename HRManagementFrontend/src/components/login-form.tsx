@@ -39,19 +39,28 @@ export function LoginForm({ onLoginSuccess }: { onLoginSuccess?: () => void }) {
       });
 
       localStorage.setItem("token", res.data.token);
-      // console.log(res.data);
       localStorage.setItem("name", res.data.name);
+      localStorage.setItem("role", res.data.designation);
+      localStorage.setItem("empId", res.data.EmpId);
+      console.log(res.data);
+
       onLoginSuccess?.();
       setTimeout(() => {
         setLoading(false);
-        navigate("/dashboard");
+        {
+          if (res.data.designation === "HR") {
+            console.log(res.data.designation);
+            navigate("/dashboard/admin");
+          } else if (res.data.designation === "Employee") {
+            console.log(res.data.designation);
+            navigate("/dashboard/employee");
+          }
+        }
       }, 500);
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
+      setLoading(false);
     }
-    // } finally {
-    //   setLoading(false);
-    // }
   };
 
   const handleSignupRedirect = () => {

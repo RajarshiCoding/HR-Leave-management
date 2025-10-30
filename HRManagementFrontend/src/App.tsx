@@ -11,6 +11,8 @@ import Dashboard from "./components/Dashboard";
 import LeavePage from "./components/LeavePage";
 import CalendarPage from "./components/CalendarPage";
 import AddEmployees from "./components/AddEmployees";
+import EmpDashboard from "./components/EmpDashboard";
+import EmpTrack from "./components/EmpTrack";
 // import EmployeeDetail from "./components/EmployeeDetail";
 
 function App() {
@@ -70,8 +72,7 @@ function App() {
               <div className="w-full max-w-sm">
                 <LoginForm
                   onLoginSuccess={() => {
-                    setIsAuthenticated(true);
-                    setAuthChecked(true);
+                    checkAuth();
                     console.log(isAuthenticated, authChecked);
                   }}
                 />
@@ -86,8 +87,7 @@ function App() {
               <div className="w-full max-w-sm">
                 <SignupForm
                   onSigninSuccess={() => {
-                    setIsAuthenticated(true);
-                    setAuthChecked(true);
+                    checkAuth();
                     console.log(isAuthenticated, authChecked);
                   }}
                 />
@@ -102,16 +102,22 @@ function App() {
             {/* HR Routes */}
             {userRole === "HR" && (
               <>
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/admin" element={<Dashboard />} />
                 <Route path="/leave" element={<LeavePage />} />
                 <Route path="/calendar" element={<CalendarPage />} />
-                <Route path="/dashboard/addEmp" element={<AddEmployees />} />
-                {/* <Route path="/dashboard/:empId" element={<EmployeeDetail />} /> */}
+                <Route
+                  path="/dashboard/admin/addEmp"
+                  element={<AddEmployees />}
+                />
               </>
             )}
             {/* Employee Routes */}
             {userRole === "Employee" && (
-              <Route path="/calendar" element={<CalendarPage />} />
+              <>
+                {/* <Route path="/calendar" element={<CalendarPage />} /> */}
+                <Route path="/dashboard/employee" element={<EmpDashboard />} />
+                <Route path="/track" element={<EmpTrack />} />
+              </>
             )}
             {/* Anything else redirects to home */}
             <Route path="*" element={<Navigate to="/" replace />} />
