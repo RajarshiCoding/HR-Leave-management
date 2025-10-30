@@ -19,10 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function LoginForm({ onLoginSuccess }: { onLoginSuccess?: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,12 +41,17 @@ export function LoginForm({
       localStorage.setItem("token", res.data.token);
       // console.log(res.data);
       localStorage.setItem("name", res.data.name);
-      navigate("/dashboard");
+      onLoginSuccess?.();
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/dashboard");
+      }, 500);
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
     }
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const handleSignupRedirect = () => {
@@ -57,7 +59,7 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6")}>
       <Card>
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>

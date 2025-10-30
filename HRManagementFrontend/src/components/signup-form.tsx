@@ -47,7 +47,11 @@ const departments = [
   "Training & Learning",
 ];
 
-export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
+export function SignupForm({
+  onSigninSuccess,
+}: {
+  onSigninSuccess?: () => void;
+}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -69,9 +73,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         name,
         email,
         password,
-        "Human resource": String,
-        HR: String,
-        phone,
+        department: "Human Resource", // 🔒 constant
+        designation: "HR", // 🔒 constant
+        contact: phone,
       });
       if (res.status == 200) {
         const res2 = await axios.post("http://localhost:5062/api/auth/login", {
@@ -80,17 +84,19 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         });
         localStorage.setItem("token", res2.data.token);
         localStorage.setItem("name", name);
-        navigate("/dashboard");
+        onSigninSuccess?.();
+        setTimeout(() => {
+          setLoading(false);
+          navigate("/dashboard");
+        }, 1000);
       }
     } catch (err: any) {
       console.log(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <Card {...props}>
+    <Card>
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
         <CardDescription>

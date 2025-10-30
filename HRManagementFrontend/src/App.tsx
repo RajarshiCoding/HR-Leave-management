@@ -18,40 +18,44 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
 
+  const checkAuth = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setAuthChecked(true);
+      setIsAuthenticated(false);
+      console.log(isAuthenticated, authChecked, "First");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5062/api/auth", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 200) {
+        const data = await res.json();
+        setIsAuthenticated(true);
+        setUserRole(data.role); // 👈 store backend role
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (err) {
+      console.error("Auth check failed:", err);
+      setIsAuthenticated(false);
+      console.log("Auth fail");
+    } finally {
+      setAuthChecked(true);
+    }
+  };
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setAuthChecked(true);
-        setIsAuthenticated(false);
-        return;
-      }
-
-      try {
-        const res = await fetch("http://localhost:5062/api/auth", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (res.status === 200) {
-          const data = await res.json();
-          setIsAuthenticated(true);
-          setUserRole(data.role); // 👈 store backend role
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (err) {
-        console.error("Auth check failed:", err);
-        setIsAuthenticated(false);
-      } finally {
-        setAuthChecked(true);
-      }
-    };
-
     checkAuth();
   }, []);
+  useEffect(() => {
+    checkAuth();
+  }, [isAuthenticated]);
 
   if (!authChecked) return <div>Loading...</div>;
 
@@ -64,7 +68,13 @@ function App() {
           element={
             <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
               <div className="w-full max-w-sm">
-                <LoginForm />
+                <LoginForm
+                  onLoginSuccess={() => {
+                    setIsAuthenticated(true);
+                    setAuthChecked(true);
+                    console.log(isAuthenticated, authChecked);
+                  }}
+                />
               </div>
             </div>
           }
@@ -74,7 +84,13 @@ function App() {
           element={
             <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
               <div className="w-full max-w-sm">
-                <SignupForm />
+                <SignupForm
+                  onSigninSuccess={() => {
+                    setIsAuthenticated(true);
+                    setAuthChecked(true);
+                    console.log(isAuthenticated, authChecked);
+                  }}
+                />
               </div>
             </div>
           }
