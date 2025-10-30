@@ -11,6 +11,7 @@ import Dashboard from "./components/Dashboard";
 import LeavePage from "./components/LeavePage";
 import CalendarPage from "./components/CalendarPage";
 import AddEmployees from "./components/AddEmployees";
+// import EmployeeDetail from "./components/EmployeeDetail";
 
 function App() {
   const [authChecked, setAuthChecked] = useState(false);
@@ -89,6 +90,7 @@ function App() {
                 <Route path="/leave" element={<LeavePage />} />
                 <Route path="/calendar" element={<CalendarPage />} />
                 <Route path="/dashboard/addEmp" element={<AddEmployees />} />
+                {/* <Route path="/dashboard/:empId" element={<EmployeeDetail />} /> */}
               </>
             )}
             {/* Employee Routes */}

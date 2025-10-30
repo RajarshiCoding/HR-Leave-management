@@ -15,12 +15,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
+import { EmployeeDetail } from "./EmployeeDetail";
 
 const Dashboard: React.FC = () => {
   const [employeeData, setEmployeeData] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleOpen = (id: number) => {
+    setSelectedId(id);
+    setOpen(true);
+  };
 
   useEffect(() => {
     const fetchEmployeeData = async () => {
@@ -51,12 +59,6 @@ const Dashboard: React.FC = () => {
 
     fetchEmployeeData();
   }, []);
-
-  const GetEmp = (EmpID: number) => {
-    console.log("Clicked employee ID:", EmpID);
-    navigate(`/dashboard/${EmpID}`);
-    // you can fetch, set state, navigate, etc.
-  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -97,7 +99,11 @@ const Dashboard: React.FC = () => {
                 {employeeData
                   .sort((a, b) => a.empId - b.empId)
                   .map((emp: any) => (
-                    <TableRow key={emp.empId} onClick={() => GetEmp(emp.empId)}>
+                    <TableRow
+                      key={emp.empId}
+                      onClick={() => handleOpen(emp.empId)}
+                      className="cursor-pointer hover:bg-muted/50"
+                    >
                       <TableCell className="font-medium">{emp.name}</TableCell>
                       <TableCell className="text-center">
                         {emp.department}
@@ -121,6 +127,14 @@ const Dashboard: React.FC = () => {
                   ))}
               </TableBody>
             </Table>
+          )}
+          {/* Dialog for employee details */}
+          {selectedId && (
+            <EmployeeDetail
+              empId={selectedId}
+              open={open}
+              onClose={() => setOpen(false)}
+            />
           )}
         </div>
       </div>
