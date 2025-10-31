@@ -20,8 +20,9 @@ export default function CalendarPage() {
   const [holidayDescription, setHolidayDescription] =
     React.useState<string>("");
   const [date, setDate] = React.useState<Date | undefined>(
-    new Date(2025, 9, 28)
+    new Date(new Date().setHours(0, 0, 0, 0))
   );
+
   const [isHoliday, setIsHoliday] = React.useState<boolean>(false);
 
   const fetchHolidays = async () => {

@@ -28,10 +28,13 @@ const formSchema = z.object({
   department: z.string().min(1, "Department is required"),
   email: z.string().email("Invalid email"),
   designation: z.string().min(1, "Designation is required"),
-  phone: z
+  contact: z
     .string()
-    .min(10, "Phone number must be at least 10 digits")
-    .regex(/^[0-9]+$/, "Phone number must contain only digits"),
+    .regex(
+      /^[0-9]{10}$/,
+      "Phone number must be exactly 10 digits and contain only numbers"
+    ),
+
   password: z.string().min(1, "Date of Birth is required"),
 });
 
@@ -45,7 +48,7 @@ export default function AddEmployees() {
       department: "",
       email: "",
       designation: "",
-      phone: "",
+      contact: "",
       password: "",
     },
   });
@@ -193,7 +196,7 @@ export default function AddEmployees() {
             {/* Phone Number */}
             <FormField
               control={form.control}
-              name="phone"
+              name="contact"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Employee Contact</FormLabel>

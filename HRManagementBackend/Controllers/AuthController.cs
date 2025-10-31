@@ -29,7 +29,7 @@ namespace HRManagementBackend.Controllers
             var token = await _authService.LoginAsync(dto.Email, dto.Password);
             var empInfo = await _authService.GetNameAsync(dto.Email);
 
-            Console.WriteLine(empInfo.EmpId);
+            // Console.WriteLine(empInfo.EmpId);
             
             if (empInfo == null)
                 return NotFound(new { message = "User not found" });
