@@ -105,6 +105,8 @@ function App() {
                 <Route path="/dashboard/admin" element={<Dashboard />} />
                 <Route path="/leave" element={<LeavePage />} />
                 <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/dashboard/employee" element={<EmpDashboard />} />
+                <Route path="/track" element={<EmpTrack />} />
                 <Route
                   path="/dashboard/admin/addEmp"
                   element={<AddEmployees />}

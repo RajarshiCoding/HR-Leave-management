@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import BasicClock from "./ui/clock";
 
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, Eye } from "lucide-react";
 
 import {
   Table,
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
 import { EmployeeDetail } from "./EmployeeDetail";
+import { Button } from "./ui/button";
 
 const Dashboard: React.FC = () => {
   const [employeeData, setEmployeeData] = useState<any[]>([]);
@@ -78,7 +79,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Content area */}
-        <div className="flex-1 h-full w-full bg-accent rounded-br-sm rounded-bl-sm">
+        <div className="flex-1 h-full w-full bg-accent rounded-br-sm rounded-bl-sm overflow-y-auto">
           {/* <p className="p-4">Main content area</p> */}
           {error ? (
             <h1>Error</h1>
@@ -93,6 +94,7 @@ const Dashboard: React.FC = () => {
                   <TableHead className="text-center">Leave Balance</TableHead>
                   <TableHead className="text-center">Leave Taken</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead className="text-center">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -101,8 +103,7 @@ const Dashboard: React.FC = () => {
                   .map((emp: any) => (
                     <TableRow
                       key={emp.empId}
-                      onClick={() => handleOpen(emp.empId)}
-                      className="cursor-pointer hover:bg-muted/50"
+                      className="hover:bg-muted-foreground/10"
                     >
                       <TableCell className="font-medium">{emp.name}</TableCell>
                       <TableCell className="text-center">
@@ -122,6 +123,14 @@ const Dashboard: React.FC = () => {
                         }
                       >
                         {emp.status}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Button
+                          variant={"ghost"}
+                          onClick={() => handleOpen(emp.empId)}
+                        >
+                          <Eye></Eye>
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -60,8 +60,23 @@ export function LeaveRequestDialog({
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to update leave: ${errorText}`);
+        throw new Error(`Failed to update leave: ${await response.text()}`);
+      } else {
+        const update = await fetch(
+          `http://localhost:5062/api/leave/update/${requestId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (!update.ok) {
+          throw new Error(
+            `Failed to update leave count: ${await update.text()}`
+          );
+        }
       }
 
       console.log(`✅ Leave #${requestId} ${status} successfully.`);
