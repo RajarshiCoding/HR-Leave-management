@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import BasicClock from "./ui/clock";
+import { Button } from "./ui/button";
+import { LeaveRequestDialog } from "./LeaveRequestDialog";
 
 function EmpDashboard() {
   const [employeeData, setEmployeeData] = useState<any | null>(null);
   const [nextHoliday, setNextHoliday] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleLeaveRequest = () => {
+    setDialogOpen(true);
+  };
 
   const fetchEmployeeData = async () => {
     try {
@@ -129,7 +136,13 @@ function EmpDashboard() {
 
           {/* Bottom Section */}
           <div className="flex-1 bg-white m-2 rounded-lg shadow-md flex items-center justify-center">
-            <p>Bottom Section</p>
+            {/* <p>Bottom Section</p> */}
+            <Button onClick={() => handleLeaveRequest()}>Request Leave</Button>
+
+            <LeaveRequestDialog
+              open={dialogOpen}
+              onClose={() => setDialogOpen(false)}
+            />
           </div>
         </div>
       </div>
