@@ -91,15 +91,25 @@ function EmpTrack() {
                     <TableCell className="text-center">
                       {new Date(emp.endDate).toDateString()}
                     </TableCell>
-                    <TableCell className="text-center">{emp.hrNote}</TableCell>
-                    <TableCell className="text-center">{emp.reason}</TableCell>
+                    <TableCell className="text-center">
+                      {emp.hrNote
+                        ? emp.hrNote.slice(0, 20) +
+                          (emp.hrNote.length > 20 ? "..." : "")
+                        : ""}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {emp.reason
+                        ? emp.reason.slice(0, 20) +
+                          (emp.reason.length > 20 ? "..." : "")
+                        : ""}
+                    </TableCell>
                     <TableCell
                       className={
-                        emp.status === "approved"
+                        emp.status === "Approved"
                           ? "text-green-600"
                           : emp.status === "Pending"
                           ? "text-yellow-500"
-                          : emp.status === "rejected"
+                          : emp.status === "Rejected"
                           ? "text-red-500"
                           : ""
                       }
