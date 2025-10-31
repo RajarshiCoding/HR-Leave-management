@@ -38,6 +38,23 @@ const formSchema = z.object({
   password: z.string().min(1, "Date of Birth is required"),
 });
 
+const departments = [
+  "Software Development",
+  "Quality Assurance",
+  "DevOps",
+  "UI/UX Design",
+  "Product Management",
+  "IT Support",
+  "Database Administration",
+  "Network & Infrastructure",
+  "Cybersecurity",
+  "Data Science",
+  "Project Management",
+  "Customer Support",
+  "Client Relations",
+  "Training & Learning",
+];
+
 export default function AddEmployees() {
   const navigate = useNavigate();
 
@@ -127,11 +144,9 @@ export default function AddEmployees() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="HR">HR</SelectItem>
-                      <SelectItem value="IT">IT</SelectItem>
-                      <SelectItem value="Finance">Finance</SelectItem>
-                      <SelectItem value="Operations">Operations</SelectItem>
-                      <SelectItem value="Marketing">Marketing</SelectItem>
+                      {departments.map((dept: string) => (
+                        <SelectItem value={dept}>{dept}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormDescription>

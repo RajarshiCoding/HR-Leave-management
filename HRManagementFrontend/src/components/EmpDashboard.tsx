@@ -84,6 +84,7 @@ function EmpDashboard() {
   useEffect(() => {
     fetchEmployeeData();
     fetchNextHoliday();
+    console.log(error);
   }, []);
 
   return (

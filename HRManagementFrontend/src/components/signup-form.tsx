@@ -16,36 +16,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import { Input } from "@/components/ui/input";
 
-import { Contact, Eye, EyeOff } from "lucide-react";
-
-const departments = [
-  "Software Development",
-  "Quality Assurance",
-  "DevOps",
-  "UI/UX Design",
-  "Product Management",
-  "IT Support",
-  "Database Administration",
-  "Network & Infrastructure",
-  "Cybersecurity",
-  "Data Science",
-  "Project Management",
-  "Customer Support",
-  "Client Relations",
-  "Training & Learning",
-];
+import { Eye, EyeOff } from "lucide-react";
 
 export function SignupForm({
   onSigninSuccess,

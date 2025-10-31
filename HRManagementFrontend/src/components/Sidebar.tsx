@@ -1,20 +1,13 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  UserRound,
-  Home,
-  CalendarDays,
-  Plane,
-  LogOut,
-  ClipboardList,
-} from "lucide-react";
+import { Home, CalendarDays, Plane, LogOut, ClipboardList } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { string } from "zod";
+
 interface SidebarProps {
   isAdmin?: boolean;
 }
