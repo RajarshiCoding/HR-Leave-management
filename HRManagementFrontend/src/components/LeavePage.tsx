@@ -167,8 +167,8 @@ export default function LeavePage() {
                       </Button>
 
                       <Button
-                        onClick={() => {
-                          processLeaveRequest(emp.requestId, "Approved");
+                        onClick={async () => {
+                          await processLeaveRequest(emp.requestId, "Approved");
                           window.location.reload();
                         }}
                         variant={"outline"}
