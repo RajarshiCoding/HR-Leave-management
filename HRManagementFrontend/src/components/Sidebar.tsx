@@ -43,25 +43,15 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
           return;
         }
 
-        const response = await fetch("http://localhost:5062/api/employee", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
         const isAnyResponse = await fetch(
           "http://localhost:5062/api/leave/isAny",
           { method: "GET" }
         );
 
-        if (!response.ok) {
-          throw new Error(`Error ${response.status}: ${response.statusText}`);
-        }
-
         if (!isAnyResponse.ok) {
-          throw new Error(`Error ${response.status}: ${response.statusText}`);
+          throw new Error(
+            `Error ${isAnyResponse.status}: ${isAnyResponse.statusText}`
+          );
         }
 
         const data = await isAnyResponse.json();
