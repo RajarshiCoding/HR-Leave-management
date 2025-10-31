@@ -72,6 +72,20 @@ namespace HRManagementBackend.Services
             return affectedRows > 0;
         }
 
+
+        public async Task<bool> UpdateLeaveCounterAsync(int requestId)
+        {
+            var query = @"
+               UPDATE employees
+               SET ""LeaveBalance"" = ""LeaveBalance"" - 1 WHERE ""EmpId"" = (
+               SELECT ""EmpId"" FROM leave_requests WHERE ""RequestId"" = @Id);";
+
+
+            using var connection = _context.CreateConnection();
+            var affectedRows = await connection.ExecuteAsync(query, new { Id = requestId });
+            return affectedRows > 0;
+        }
+
         // Check if any pending requests exist
         public async Task<bool> HasPendingRequestsAsync()
         {

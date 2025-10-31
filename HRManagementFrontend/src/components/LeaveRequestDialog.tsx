@@ -65,7 +65,7 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
 
       alert("Leave submitted successfully!");
       onClose(); // close dialog
-      window.location.reload(); // refresh page
+      // window.location.reload(); // refresh page
     } catch (error: any) {
       console.error(error);
       alert("Failed to submit leave.");

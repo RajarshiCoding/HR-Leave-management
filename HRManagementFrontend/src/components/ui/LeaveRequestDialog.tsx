@@ -14,76 +14,80 @@ import { Eye } from "lucide-react";
 
 export function LeaveRequestDialog({
   requestId,
-  onClose,
+  processLeaveRequest,
 }: {
   requestId: number;
-  onClose?: () => void;
+  processLeaveRequest?: (
+    requestId: number,
+    status: "Approved" | "Rejected",
+    hrNote?: string
+  ) => void;
 }) {
   const [leave, setLeave] = useState<any>(null);
   const [hrNote, setHrNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  async function processLeaveRequest(
-    requestId: number,
-    status: "Approved" | "Rejected",
-    hrNote?: string
-  ): Promise<void> {
-    // Validate status input
-    if (status !== "Approved" && status !== "Rejected") {
-      throw new Error("Status must be either 'approved' or 'rejected'.");
-    }
+  // async function processLeaveRequests(
+  //   requestId: number,
+  //   status: "Approved" | "Rejected",
+  //   hrNote?: string
+  // ): Promise<void> {
+  //   // Validate status input
+  //   if (status !== "Approved" && status !== "Rejected") {
+  //     throw new Error("Status must be either 'approved' or 'rejected'.");
+  //   }
 
-    // Default HR note
-    const note = hrNote?.trim() || "Processed leave!";
+  //   // Default HR note
+  //   const note = hrNote?.trim() || "Processed leave!";
 
-    // Get JWT token from localStorage
-    const token = localStorage.getItem("token");
-    if (!token) {
-      throw new Error("Authorization token not found in localStorage.");
-    }
+  //   // Get JWT token from localStorage
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     throw new Error("Authorization token not found in localStorage.");
+  //   }
 
-    try {
-      const response = await fetch(
-        `http://localhost:5062/api/leave/${requestId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            status: status,
-            hrNote: note,
-          }),
-        }
-      );
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:5062/api/leave/${requestId}`,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify({
+  //           status: status,
+  //           hrNote: note,
+  //         }),
+  //       }
+  //     );
 
-      if (!response.ok) {
-        throw new Error(`Failed to update leave: ${await response.text()}`);
-      } else {
-        const update = await fetch(
-          `http://localhost:5062/api/leave/update/${requestId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (!update.ok) {
-          throw new Error(
-            `Failed to update leave count: ${await update.text()}`
-          );
-        }
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to update leave: ${await response.text()}`);
+  //     } else {
+  //       const update = await fetch(
+  //         `http://localhost:5062/api/leave/update/${requestId}`,
+  //         {
+  //           method: "PUT",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+  //       if (!update.ok) {
+  //         throw new Error(
+  //           `Failed to update leave count: ${await update.text()}`
+  //         );
+  //       }
+  //     }
 
-      console.log(`✅ Leave #${requestId} ${status} successfully.`);
-    } catch (error) {
-      console.error("❌ Error processing leave:", error);
-    }
-  }
+  //     console.log(`✅ Leave #${requestId} ${status} successfully.`);
+  //   } catch (error) {
+  //     console.error("❌ Error processing leave:", error);
+  //   }
+  // }
 
   const fetchLeaveDetails = async () => {
     try {
@@ -110,7 +114,7 @@ export function LeaveRequestDialog({
         if (isOpen) {
           fetchLeaveDetails();
         } else {
-          onClose?.(); // 👈 call parent refresh when dialog closes
+          // onClose?.(); // 👈 call parent refresh when dialog closes
         }
       }}
     >
@@ -177,9 +181,9 @@ export function LeaveRequestDialog({
           <Button
             variant="destructive"
             onClick={async () => {
-              await processLeaveRequest(requestId, "Rejected", hrNote);
+              await processLeaveRequest!(requestId, "Rejected", hrNote);
               setOpen(false); // 👈 close after reject
-              onClose?.();
+              // onClose?.();
             }}
             disabled={loading}
           >
@@ -188,9 +192,9 @@ export function LeaveRequestDialog({
           <Button
             className="bg-green-600 hover:bg-green-700"
             onClick={async () => {
-              await processLeaveRequest(requestId, "Approved", hrNote);
+              await processLeaveRequest!(requestId, "Approved", hrNote);
               setOpen(false); // 👈 close after approve
-              onClose?.();
+              // onClose?.();
             }}
             disabled={loading}
           >

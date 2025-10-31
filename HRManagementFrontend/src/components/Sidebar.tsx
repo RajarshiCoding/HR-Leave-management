@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, CalendarDays, Plane, LogOut, ClipboardList } from "lucide-react";
+import {
+  Home,
+  CalendarDays,
+  Plane,
+  LogOut,
+  ClipboardList,
+  List,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -103,6 +110,28 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
                 onClick={() => navigate("/calendar")}
               >
                 <CalendarDays className="mr-2 h-5 w-5" /> Calendar
+              </Button>
+              <Button
+                variant={
+                  location.pathname === "/dashboard/employee"
+                    ? "default"
+                    : "ghost"
+                }
+                className="justify-start"
+                onClick={() => {
+                  navigate("/dashboard/employee");
+                  console.log(empId);
+                }}
+              >
+                <List className="mr-2 h-5 w-5" /> Details
+              </Button>
+
+              <Button
+                variant={location.pathname === "/track" ? "default" : "ghost"}
+                className="justify-start"
+                onClick={() => navigate("/track")}
+              >
+                <ClipboardList className="mr-2 h-5 w-5" /> Track
               </Button>
             </>
           ) : (

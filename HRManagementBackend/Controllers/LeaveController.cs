@@ -79,6 +79,15 @@ namespace HRManagementBackend.Controllers
             return NoContent();
         }
 
+        [HttpPut("update/{requestId}")]
+        public async Task<IActionResult> UpdateLeaveCounter(int requestId)
+        {
+            var updated = await _leaveService.UpdateLeaveCounterAsync(requestId);
+            if (!updated)
+                return NotFound(new { message = "Cannot update!!" });
+            return NoContent();
+        }
+
         // GET: api/leave/isAny
         [HttpGet("isAny")]
         public async Task<IActionResult> HasPendingLeaves()

@@ -59,7 +59,9 @@ function EmpTrack() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar isAdmin={false}></Sidebar>
+      <Sidebar
+        isAdmin={localStorage.getItem("role") == "HR" ? true : false}
+      ></Sidebar>
       <div className="flex flex-col bg-gray-200 p-2 h-screen w-full">
         {/* Top bar */}
         <div className="flex items-center justify-between w-full h-16 bg-blue-600 px-6 rounded-tr-sm rounded-tl-sm">

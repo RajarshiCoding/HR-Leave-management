@@ -59,7 +59,7 @@ export default function LeavePage() {
 
       if (!response.ok) {
         throw new Error(`Failed to update leave: ${await response.text()}`);
-      } else {
+      } else if (response.ok && status === "Approved") {
         const update = await fetch(
           `http://localhost:5062/api/leave/update/${requestId}`,
           {
@@ -151,7 +151,7 @@ export default function LeavePage() {
                     </TableCell>
                     <TableCell className="text-center space-x-1.5">
                       <LeaveRequestDialog
-                        onClose={fetchEmployeeData}
+                        processLeaveRequest={processLeaveRequest}
                         requestId={emp.requestId}
                       />
 

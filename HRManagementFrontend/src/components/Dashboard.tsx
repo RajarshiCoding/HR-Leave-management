@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
             }}
             className="text-white font-medium cursor-pointer"
           >
-            <CirclePlus size={42} color="black" />
+            <CirclePlus size={36} absoluteStrokeWidth color="black" />
           </button>
         </div>
 
