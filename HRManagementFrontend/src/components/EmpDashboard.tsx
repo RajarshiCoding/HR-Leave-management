@@ -4,6 +4,7 @@ import BasicClock from "./ui/clock";
 
 function EmpDashboard() {
   const [employeeData, setEmployeeData] = useState<any | null>(null);
+  const [nextHoliday, setNextHoliday] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchEmployeeData = async () => {
@@ -44,8 +45,38 @@ function EmpDashboard() {
     }
   };
 
+  const fetchNextHoliday = async () => {
+    try {
+      const response = await fetch("http://localhost:5062/api/holiday");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      // ✅ Get today's date (without time)
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // ✅ Filter holidays after today
+      const upcoming = data.filter((h: any) => new Date(h.date) > today);
+
+      // ✅ Sort by date (ascending)
+      upcoming.sort(
+        (a: any, b: any) =>
+          new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
+
+      // ✅ Pick next holiday or set blank JSON if none
+      setNextHoliday(upcoming.length > 0 ? upcoming[0] : {});
+    } catch (err: any) {
+      console.error("Error fetching holidays:", err.message);
+    }
+  };
+
   useEffect(() => {
     fetchEmployeeData();
+    fetchNextHoliday();
   }, []);
 
   return (
@@ -74,7 +105,25 @@ function EmpDashboard() {
 
             {/* Right Div */}
             <div className="flex-1 bg-white m-2 rounded-lg shadow-md flex items-center justify-center">
-              <p>Top Right</p>
+              {nextHoliday && Object.keys(nextHoliday).length > 0 ? (
+                <div className="flex-1 flex flex-col items-center justify-center">
+                  <strong>
+                    <h2>Next Holiday:</h2>
+                  </strong>
+                  <p>
+                    <strong>Title:</strong> {nextHoliday.title}
+                  </p>
+                  <p>
+                    <strong>Date:</strong>{" "}
+                    {new Date(nextHoliday.date).toDateString()}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {nextHoliday.description}
+                  </p>
+                </div>
+              ) : (
+                <p>No upcoming holidays 🎉</p>
+              )}
             </div>
           </div>
 
