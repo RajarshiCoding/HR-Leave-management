@@ -153,11 +153,12 @@ export default function LeavePage() {
                       <LeaveRequestDialog
                         processLeaveRequest={processLeaveRequest}
                         requestId={emp.requestId}
+                        onClose={() => window.location.reload()}
                       />
 
                       <Button
-                        onClick={() => {
-                          processLeaveRequest(emp.requestId, "Rejected");
+                        onClick={async () => {
+                          await processLeaveRequest(emp.requestId, "Rejected");
                           window.location.reload();
                         }}
                         variant={"outline"}

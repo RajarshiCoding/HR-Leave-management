@@ -65,7 +65,7 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
 
       alert("Leave submitted successfully!");
       onClose(); // close dialog
-      // window.location.reload(); // refresh page
+      window.location.reload(); // refresh page
     } catch (error: any) {
       console.error(error);
       alert("Failed to submit leave.");
@@ -99,7 +99,9 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
               <Calendar
                 mode="single"
                 selected={startDate}
-                onSelect={(date) => date && setStartDate(date)}
+                onSelect={(date) =>
+                  date && setStartDate(date) && setEndDate(date)
+                }
                 disabled={(date) => date <= today}
               />
             </PopoverContent>
@@ -127,7 +129,7 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
                 mode="single"
                 selected={endDate}
                 onSelect={(date) => date && setEndDate(date)}
-                disabled={(date) => date <= today}
+                disabled={(date) => date <= startDate}
               />
             </PopoverContent>
           </Popover>

@@ -15,6 +15,7 @@ import { Eye } from "lucide-react";
 export function LeaveRequestDialog({
   requestId,
   processLeaveRequest,
+  onClose,
 }: {
   requestId: number;
   processLeaveRequest?: (
@@ -22,6 +23,7 @@ export function LeaveRequestDialog({
     status: "Approved" | "Rejected",
     hrNote?: string
   ) => void;
+  onClose?: () => void;
 }) {
   const [leave, setLeave] = useState<any>(null);
   const [hrNote, setHrNote] = useState("");
@@ -114,7 +116,7 @@ export function LeaveRequestDialog({
         if (isOpen) {
           fetchLeaveDetails();
         } else {
-          // onClose?.(); // 👈 call parent refresh when dialog closes
+          onClose?.(); // safely trigger the reload
         }
       }}
     >
@@ -183,7 +185,7 @@ export function LeaveRequestDialog({
             onClick={async () => {
               await processLeaveRequest!(requestId, "Rejected", hrNote);
               setOpen(false); // 👈 close after reject
-              // onClose?.();
+              onClose?.();
             }}
             disabled={loading}
           >
@@ -194,7 +196,7 @@ export function LeaveRequestDialog({
             onClick={async () => {
               await processLeaveRequest!(requestId, "Approved", hrNote);
               setOpen(false); // 👈 close after approve
-              // onClose?.();
+              onClose?.();
             }}
             disabled={loading}
           >

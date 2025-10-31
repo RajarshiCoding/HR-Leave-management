@@ -140,7 +140,12 @@ function EmpDashboard() {
           {/* Bottom Section */}
           <div className="flex-1 bg-white m-2 rounded-lg shadow-md flex items-center justify-center">
             {/* <p>Bottom Section</p> */}
-            <Button onClick={() => handleLeaveRequest()}>Request Leave</Button>
+            <Button
+              onClick={() => handleLeaveRequest()}
+              disabled={employeeData?.leaveBalance <= 0}
+            >
+              Request Leave
+            </Button>
 
             <LeaveRequestDialog
               open={dialogOpen}
