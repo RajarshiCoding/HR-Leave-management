@@ -1,9 +1,53 @@
+import { useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import BasicClock from "./ui/clock";
-import { useParams } from "react-router-dom";
 
 function EmpDashboard() {
-  const { empId } = useParams<{ empId: string }>();
+  const [employeeData, setEmployeeData] = useState<any | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchEmployeeData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const empId = localStorage.getItem("empId");
+
+      if (!token) {
+        setError("No token found in localStorage");
+        return;
+      }
+      if (!empId) {
+        setError("No employee ID found in localStorage");
+        return;
+      }
+
+      console.log("Emp id", empId);
+
+      const response = await fetch(
+        `http://localhost:5062/api/employee/${empId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      setEmployeeData(data);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployeeData();
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar isAdmin={false}></Sidebar>
@@ -19,12 +63,12 @@ function EmpDashboard() {
             {/* Left Div */}
             <div className="flex-1 bg-white m-2 rounded-lg shadow-md flex items-center justify-center">
               <div className="flex-1 flex-col bg-white m-2 rounded-lg flex items-center justify-center">
-                <p>Available</p>
-                <p>12</p>
+                <strong>Leave Balance:</strong>
+                <p>{employeeData?.leaveBalance ?? "N/A"}</p>
               </div>
               <div className="flex-1 flex-col bg-white m-2 rounded-lg flex items-center justify-center">
-                <p>Token</p>
-                <p>3</p>
+                <strong>Leave Taken:</strong>
+                <p>{employeeData?.leaveTaken ?? "N/A"}</p>
               </div>
             </div>
 

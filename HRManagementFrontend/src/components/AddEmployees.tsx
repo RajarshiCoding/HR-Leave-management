@@ -206,6 +206,7 @@ export default function AddEmployees() {
                       type="text"
                       inputMode="numeric"
                       pattern="[0-9]*"
+                      maxLength={10}
                       {...field}
                     />
                   </FormControl>

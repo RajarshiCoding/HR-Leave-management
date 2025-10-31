@@ -41,7 +41,7 @@ export function LoginForm({ onLoginSuccess }: { onLoginSuccess?: () => void }) {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("name", res.data.name);
       localStorage.setItem("role", res.data.designation);
-      localStorage.setItem("empId", res.data.EmpId);
+      localStorage.setItem("empId", res.data.empId);
       console.log(res.data);
 
       onLoginSuccess?.();
