@@ -23,8 +23,12 @@ interface LeaveRequestDialogProps {
 }
 
 export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
-  const [startDate, setStartDate] = React.useState<Date>(new Date());
-  const [endDate, setEndDate] = React.useState<Date>(new Date());
+  const [startDate, setStartDate] = React.useState<Date>(
+    new Date(new Date().setDate(new Date().getDate() + 1))
+  );
+  const [endDate, setEndDate] = React.useState<Date>(
+    new Date(new Date().setDate(new Date().getDate() + 1))
+  );
   const [reason, setReason] = React.useState("");
 
   const today = new Date();
@@ -96,7 +100,7 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
                 mode="single"
                 selected={startDate}
                 onSelect={(date) => date && setStartDate(date)}
-                disabled={(date) => date < today}
+                disabled={(date) => date <= today}
               />
             </PopoverContent>
           </Popover>

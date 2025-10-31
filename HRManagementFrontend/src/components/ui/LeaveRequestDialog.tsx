@@ -26,11 +26,11 @@ export function LeaveRequestDialog({
 
   async function processLeaveRequest(
     requestId: number,
-    status: "approved" | "rejected",
+    status: "Approved" | "Rejected",
     hrNote?: string
   ): Promise<void> {
     // Validate status input
-    if (status !== "approved" && status !== "rejected") {
+    if (status !== "Approved" && status !== "Rejected") {
       throw new Error("Status must be either 'approved' or 'rejected'.");
     }
 
@@ -162,7 +162,7 @@ export function LeaveRequestDialog({
           <Button
             variant="destructive"
             onClick={async () => {
-              await processLeaveRequest(requestId, "rejected", hrNote);
+              await processLeaveRequest(requestId, "Rejected", hrNote);
               setOpen(false); // 👈 close after reject
               onClose?.();
             }}
@@ -173,7 +173,7 @@ export function LeaveRequestDialog({
           <Button
             className="bg-green-600 hover:bg-green-700"
             onClick={async () => {
-              await processLeaveRequest(requestId, "approved", hrNote);
+              await processLeaveRequest(requestId, "Approved", hrNote);
               setOpen(false); // 👈 close after approve
               onClose?.();
             }}

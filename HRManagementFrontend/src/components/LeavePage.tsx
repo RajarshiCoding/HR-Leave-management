@@ -24,11 +24,11 @@ export default function LeavePage() {
 
   async function processLeaveRequest(
     requestId: number,
-    status: "approved" | "rejected",
+    status: "Approved" | "Rejected",
     hrNote?: string
   ): Promise<void> {
     // Validate status input
-    if (status !== "approved" && status !== "rejected") {
+    if (status !== "Approved" && status !== "Rejected") {
       throw new Error("Status must be either 'approved' or 'rejected'.");
     }
 
@@ -142,7 +142,7 @@ export default function LeavePage() {
 
                       <Button
                         onClick={() => {
-                          processLeaveRequest(emp.requestId, "rejected");
+                          processLeaveRequest(emp.requestId, "Rejected");
                           window.location.reload();
                         }}
                         variant={"outline"}
@@ -153,7 +153,7 @@ export default function LeavePage() {
 
                       <Button
                         onClick={() => {
-                          processLeaveRequest(emp.requestId, "approved");
+                          processLeaveRequest(emp.requestId, "Approved");
                           window.location.reload();
                         }}
                         variant={"outline"}
