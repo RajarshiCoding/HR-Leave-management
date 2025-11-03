@@ -69,11 +69,36 @@ namespace HRManagementBackend.Controllers
             var role = User.FindFirst(ClaimTypes.Role)?.Value;
             var name = User.Identity?.Name;
             return Ok(new
-                {
-                    message = "Authorized",
-                    role,
-                    name
-                });
+            {
+                message = "Authorized",
+                role,
+                name
+            });
         }
+        [HttpPut("changepass")]
+        [Authorize]
+        public async Task<IActionResult> ChangePass([FromBody] ChangePasswordDto dto)
+        {
+            if (dto == null || dto.EmpId <= 0 || 
+                string.IsNullOrEmpty(dto.OldPassword) || string.IsNullOrEmpty(dto.NewPassword))
+            {
+                return BadRequest(new { message = "Employee ID, old password, and new password are required." });
+            }
+
+            var userData = await _authService.GetEmployee(dto.EmpId);
+            if (userData == null)
+                return NotFound(new { message = "User not found." });
+
+            var rowsAffected = await _authService.VerifyAndChangePassword(userData, dto.OldPassword, dto.NewPassword);
+
+            if (rowsAffected == 0)
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to update password. Check old password or database error." });
+
+            return Ok(new
+            {
+                message = "Password changed successfully!"
+            });
+        }
+
     }
 }

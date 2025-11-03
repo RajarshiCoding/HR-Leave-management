@@ -112,5 +112,40 @@ namespace HRManagementBackend.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public async Task<Employee?> GetEmployee(int EmpId)
+        {
+            const string query = @"SELECT *
+                                FROM employees 
+                                WHERE ""EmpId"" = @empId";
+
+            using var connection = _context.CreateConnection();
+            var result = await connection.QueryFirstOrDefaultAsync<Employee>(query, new { EmpId = EmpId });
+
+            return result;
+        }
+
+        public async Task<int> VerifyAndChangePassword(Employee userData, string OldPassword, string NewPassword)
+        {
+            if (!BCrypt.Net.BCrypt.Verify(OldPassword, userData.PasswordHash))
+            {
+                return 0;
+            }
+            var newPasswordHash = BCrypt.Net.BCrypt.HashPassword(NewPassword);
+
+            var query = @"
+                UPDATE employees 
+                SET ""PasswordHash"" = @NewPasswordHash
+                WHERE ""EmpId"" = @EmpId;
+            ";
+
+            using var connection = _context.CreateConnection();
+            var rowsAffected = await connection.ExecuteAsync(query, new
+            {
+                NewPasswordHash = newPasswordHash,
+                EmpId = userData.EmpId
+            });
+            return rowsAffected;
+        }
     }
 }
