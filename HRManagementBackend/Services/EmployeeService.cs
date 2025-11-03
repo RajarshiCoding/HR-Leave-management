@@ -42,9 +42,9 @@ namespace HRManagementBackend.Services
             // ";
             var query = @"
                     INSERT INTO employees 
-                    (""Name"", ""Email"", ""PasswordHash"", ""PasswordSalt"", ""Department"", ""Designation"", ""Contact"", ""JoiningDate"", ""LeaveBalance"", ""LeaveTaken"", ""Status"")
+                    (""Name"", ""Email"", ""PasswordHash"", ""PasswordSalt"", ""Department"", ""Designation"", ""Contact"", ""JoiningDate"", ""LeaveBalance"", ""LeaveTaken"", ""Status"",""DOB"")
                     VALUES
-                    (@Name, @Email, @PasswordHash, @PasswordSalt, @Department, @Designation, @Contact, @JoiningDate, @LeaveBalance, @LeaveTaken, 'Active')
+                    (@Name, @Email, @PasswordHash, @PasswordSalt, @Department, @Designation, @Contact, @JoiningDate, @LeaveBalance, @LeaveTaken, 'Active', @DOB)
                     RETURNING ""EmpId"";
                 ";
 
