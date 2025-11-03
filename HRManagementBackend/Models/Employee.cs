@@ -15,6 +15,7 @@ namespace HRManagementBackend.Models
         public int LeaveBalance { get; set; }         // Remaining leaves
         public int LeaveTaken { get; set; }           // Leaves taken
         public string? Status { get; set; }            // Active / Inactive / On Leave
+        public DateTime  DOB { get; set; }     // date of birth 
     }
 
     public class EmployeeUpdateDto
