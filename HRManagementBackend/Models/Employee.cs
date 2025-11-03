@@ -7,16 +7,14 @@ namespace HRManagementBackend.Models
         public required string Name { get; set; }              // Employee full name
         public required string Email { get; set; }             // Unique email
         public string? PasswordHash { get; set; }      // Hashed password
-        // public string? PasswordSalt { get; set; }      // Salt for password hashing
+        public string? PasswordSalt { get; set; }      // Salt for password hashing
         public required string Department { get; set; }        // Department name
         public required string Designation { get; set; }      // Role or designation
         public required string Contact { get; set; }          // Contact number
-        public DateOnly JoiningDate { get; set; }     // Joining date
+        public DateTime JoiningDate { get; set; }     // Joining date
         public int LeaveBalance { get; set; }         // Remaining leaves
         public int LeaveTaken { get; set; }           // Leaves taken
         public string? Status { get; set; }            // Active / Inactive / On Leave
-        public DateOnly DOB { get; set; }     // Date of birth
-        
     }
 
     public class EmployeeUpdateDto

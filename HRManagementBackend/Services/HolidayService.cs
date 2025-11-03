@@ -22,7 +22,7 @@ namespace HRManagementBackend.Services
             return await connection.QueryAsync<Holiday>(query);
         }
         
-        public async Task<Holiday?> GetHolidaysByDateAsync(DateOnly date)
+        public async Task<Holiday?> GetHolidaysByDateAsync(DateTime date)
         {
             var query = @"
                 SELECT ""HolidayId"", ""Title"", ""Description"", ""Date"", ""CreatedAt""
@@ -69,7 +69,7 @@ namespace HRManagementBackend.Services
         }
 
         // Delete holiday
-        public async Task<bool> DeleteHolidayAsync(DateOnly date)
+        public async Task<bool> DeleteHolidayAsync(DateTime date)
         {
             var query = @"DELETE FROM holidays WHERE ""Date"" = @Date";
             using var connection = _context.CreateConnection();

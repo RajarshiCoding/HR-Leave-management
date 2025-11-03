@@ -1,0 +1,39 @@
+[33mae8f397[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: reset: moving to HEAD~2
+[33m25287c3[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: commit: DateTime -> DateOnly
+[33me943350[m HEAD@{2}: commit: Appsettings DB port change
+[33mae8f397[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{3}: commit: Emp delete button
+[33m7aa0058[m HEAD@{4}: commit: bug fixes
+[33m57d59ec[m HEAD@{5}: commit: all bug fixes
+[33m1de2a63[m HEAD@{6}: commit: LeavePageUpdate
+[33md289953[m HEAD@{7}: commit: final
+[33m8c3251d[m HEAD@{8}: commit: minor changes
+[33m6561a88[m HEAD@{9}: commit: Table content len limit
+[33m58cd67b[m HEAD@{10}: commit: Frond end almost done
+[33m156952a[m HEAD@{11}: commit: Added Leave submit button
+[33m7897228[m HEAD@{12}: commit: emp next holiday integration
+[33m0d7c0a2[m HEAD@{13}: commit: emp dashboard data integration
+[33m498ecc3[m HEAD@{14}: commit: Removed junk code
+[33m4074b97[m HEAD@{15}: commit: Fixed Employee add
+[33m6819daa[m HEAD@{16}: commit: final
+[33ma438517[m HEAD@{17}: commit: push
+[33me38ae88[m HEAD@{18}: commit: Login bug fixes
+[33md9045b9[m HEAD@{19}: commit: Added Employee detail
+[33m3687f0e[m HEAD@{20}: commit: redirection if not logged in and role control
+[33m6d60071[m HEAD@{21}: commit: Final touch
+[33m963fccc[m HEAD@{22}: commit: Frontend updates
+[33m7dd1a1d[m HEAD@{23}: commit: Minor backend changes
+[33mf917229[m HEAD@{24}: commit: Calendar bug fix & added feature
+[33m680ae5a[m HEAD@{25}: commit: updates
+[33me042001[m HEAD@{26}: commit: Uploading frontend
+[33mcb7151c[m HEAD@{27}: commit: Readme Updated
+[33m2911370[m HEAD@{28}: commit: "designation" role added
+[33m7c963a2[m HEAD@{29}: commit: added BCrypt
+[33mc2e2d8c[m HEAD@{30}: commit: auth implementation
+[33m633820f[m HEAD@{31}: commit: Auth implimentation
+[33m86d7ed0[m HEAD@{32}: commit: Uploading Backend
+[33mceba666[m HEAD@{33}: commit: Readme update
+[33mce57c4f[m HEAD@{34}: pull: Fast-forward
+[33mee065e2[m HEAD@{35}: reset: moving to HEAD
+[33mee065e2[m HEAD@{36}: commit: Adding image files
+[33m747a93e[m HEAD@{37}: Branch: renamed refs/heads/master to refs/heads/main
+[33m747a93e[m HEAD@{39}: commit (initial): add README

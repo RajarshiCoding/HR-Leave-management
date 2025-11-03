@@ -25,7 +25,7 @@ namespace HRManagementBackend.Controllers
 
         // GET: api/holiday/{date}
         [HttpGet("{date}")]
-        public async Task<IActionResult> GetHolidayByDate(DateOnly date)
+        public async Task<IActionResult> GetHolidayByDate(DateTime date)
         {
             var holidays = await _holidayService.GetHolidaysByDateAsync(date);
             if (holidays == null)
@@ -41,14 +41,14 @@ namespace HRManagementBackend.Controllers
             if (holiday == null || string.IsNullOrEmpty(holiday.Title))
                 return BadRequest(new { message = "Invalid holiday data" });
 
-            holiday.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
+            holiday.CreatedAt = DateTime.UtcNow;
             var id = await _holidayService.AddHolidayAsync(holiday);
             return CreatedAtAction(nameof(GetAllHolidays), new { id }, new { id });
         }
 
         // PUT: api/holiday/{date}
         [HttpPut("{date}")]
-        public async Task<IActionResult> UpdateHoliday(DateOnly date, [FromBody] HolidayUpdateDto dto)
+        public async Task<IActionResult> UpdateHoliday(DateTime date, [FromBody] HolidayUpdateDto dto)
         {
             if (dto == null)
                 return BadRequest(new { message = "Invalid holiday data" });
@@ -70,7 +70,7 @@ namespace HRManagementBackend.Controllers
 
         // DELETE: api/holiday/{date}
         [HttpDelete("{date}")]
-        public async Task<IActionResult> DeleteHoliday(DateOnly date)
+        public async Task<IActionResult> DeleteHoliday(DateTime date)
         {
             var deleted = await _holidayService.DeleteHolidayAsync(date);
             if (!deleted)

@@ -51,7 +51,7 @@ namespace HRManagementBackend.Controllers
 
             // Set default values
             leave.Status = "Pending";
-            leave.AppliedOn = DateOnly.FromDateTime(DateTime.Now);
+            leave.AppliedOn = DateTime.UtcNow;
 
             var requestId = await _leaveService.AddLeaveAsync(leave);
             return CreatedAtAction(nameof(GetLeaveById), new { requestId }, new { requestId });
