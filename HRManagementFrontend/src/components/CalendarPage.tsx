@@ -77,13 +77,13 @@ export default function CalendarPage() {
           onSelect={setDate}
           defaultMonth={date}
           className="rounded-lg border [--cell-size:--spacing(11)] md:[--cell-size:--spacing(12)] "
-          buttonVariant="ghost"
           modifiers={{
             holiday: holidayList,
           }}
+          showOutsideDays={false}
           modifiersClassNames={{
             holiday:
-              "relative before:content-['•'] text-3xl before:absolute before:text-red-500 before:bottom-[-5px] before:left-1/2 before:-translate-x-1/2",
+              "text-red-500 font-extrabold rounded-md bg-red-100 hover:!bg-red-200",
           }}
         />
 
