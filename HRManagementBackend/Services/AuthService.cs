@@ -60,8 +60,8 @@ namespace HRManagementBackend.Services
             // ";
             var insertQuery = @"
                 INSERT INTO employees 
-                (""Name"", ""Email"", ""PasswordHash"", ""Department"",""Designation"",""Contact"", ""Status"")
-                VALUES (@Name, @Email, @PasswordHash, @Department, @Designation, @Contact, 'Active')
+                (""Name"", ""Email"", ""PasswordHash"", ""Department"",""Designation"",""Contact"")
+                VALUES (@Name, @Email, @PasswordHash, @Department, @Designation, @Contact)
             ";
 
             using var connection = _context.CreateConnection();

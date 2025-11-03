@@ -17,7 +17,21 @@ namespace HRManagementBackend.Services
         // Get all employees
         public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
         {
-            var query = "SELECT * FROM employees";              //not all, just the data needed
+            var query = @"
+                        SELECT 
+                            e.*,
+                            CASE 
+                                WHEN CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate""
+                                    AND lr.""Status"" = 'Approved'
+                                THEN 'Inactive'
+                                ELSE 'Active'
+                            END AS ""Status""
+                        FROM employees e
+                        LEFT JOIN leave_requests lr
+                            ON e.""EmpId"" = lr.""EmpId""
+                            AND CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate"";
+                        ";
+              //not all, just the data needed
             using var connection = _context.CreateConnection();
             return await connection.QueryAsync<Employee>(query);
         }
@@ -25,7 +39,22 @@ namespace HRManagementBackend.Services
         // Get employee by ID
         public async Task<Employee?> GetEmployeeByIdAsync(int empId)
         {
-            var query = @"SELECT * FROM employees WHERE ""EmpId"" = @Id";
+            var query = @"
+                        SELECT 
+                            e.*,
+                            CASE 
+                                WHEN CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate""
+                                    AND lr.""Status"" = 'Approved'
+                                THEN 'Inactive'
+                                ELSE 'Active'
+                            END AS ""status_emp""
+                        FROM employees e
+                        LEFT JOIN leave_requests lr
+                            ON e.""EmpId"" = lr.""EmpId""
+                            AND CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate""
+                        WHERE e.""EmpId"" = @Id;
+                        ";
+
             using var connection = _context.CreateConnection();
             return await connection.QueryFirstOrDefaultAsync<Employee>(query, new { Id = empId });
         }
@@ -43,9 +72,9 @@ namespace HRManagementBackend.Services
             var checkQuery = @"SELECT COUNT(*) FROM employees WHERE ""Email"" = @Email";
             var query = @"
                     INSERT INTO employees 
-                    (""Name"", ""Email"", ""PasswordHash"",  ""Department"", ""Designation"", ""Contact"", ""Status"",""DOB"")
+                    (""Name"", ""Email"", ""PasswordHash"",  ""Department"", ""Designation"", ""Contact"", ""DOB"")
                     VALUES
-                    (@Name, @Email, @PasswordHash,  @Department, @Designation, @Contact, @Status , @DOB)
+                    (@Name, @Email, @PasswordHash,  @Department, @Designation, @Contact, @DOB)
                     RETURNING ""EmpId"";
                 ";
 
@@ -57,7 +86,7 @@ namespace HRManagementBackend.Services
                 return -1;
 
             employee.PasswordHash = BCrypt.Net.BCrypt.HashPassword(employee.PasswordHash);
-            employee.Status = "Active";
+            // employee.Status = "Active";
 
             return await connection.ExecuteScalarAsync<int>(query, employee);
         }
@@ -66,6 +95,7 @@ namespace HRManagementBackend.Services
         public async Task<bool> UpdateEmployeeAsync(Employee employee)
         {
         //""LeaveTaken"" = @LeaveTaken,
+                // ""Status"" = @Status,
         var query = @"
             UPDATE employees SET
                 ""Name"" = @Name,
@@ -74,7 +104,6 @@ namespace HRManagementBackend.Services
                 ""Designation"" = @Designation,
                 ""Contact"" = @Contact,
                 ""LeaveBalance"" = @LeaveBalance,
-                ""Status"" = @Status,
                 ""DOB"" = @DOB
             WHERE ""EmpId"" = @EmpId;
         ";

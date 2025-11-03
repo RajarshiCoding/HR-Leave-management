@@ -82,7 +82,7 @@ namespace HRManagementBackend.Controllers
             if (dto.Contact != null) employee.Contact = dto.Contact;
             if (dto.LeaveBalance.HasValue) employee.LeaveBalance = dto.LeaveBalance.Value;
             if (dto.LeaveTaken.HasValue) employee.LeaveTaken = dto.LeaveTaken.Value;
-            if (dto.Status != null) employee.Status = dto.Status;
+            // if (dto.Status != null) employee.Status = dto.Status;
 
             var updated = await _employeeService.UpdateEmployeeAsync(employee);
             if (!updated)
