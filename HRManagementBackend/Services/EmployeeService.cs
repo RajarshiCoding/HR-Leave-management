@@ -43,9 +43,9 @@ namespace HRManagementBackend.Services
             var checkQuery = @"SELECT COUNT(*) FROM employees WHERE ""Email"" = @Email";
             var query = @"
                     INSERT INTO employees 
-                    (""Name"", ""Email"", ""PasswordHash"",  ""Department"", ""Designation"", ""Contact"", ""JoiningDate"", ""LeaveBalance"", ""Status"",""DOB"")
+                    (""Name"", ""Email"", ""PasswordHash"",  ""Department"", ""Designation"", ""Contact"", ""Status"",""DOB"")
                     VALUES
-                    (@Name, @Email, @PasswordHash,  @Department, @Designation, @Contact, @JoiningDate, @LeaveBalance, @Status , @DOB)
+                    (@Name, @Email, @PasswordHash,  @Department, @Designation, @Contact, @Status , @DOB)
                     RETURNING ""EmpId"";
                 ";
 
