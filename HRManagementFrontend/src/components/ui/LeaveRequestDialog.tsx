@@ -100,6 +100,7 @@ export function LeaveRequestDialog({
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
+      console.log(data);
       setLeave(data);
     } catch (err) {
       console.error("Error fetching leave details:", err);

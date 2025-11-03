@@ -5,6 +5,7 @@ namespace HRManagementBackend.Models
         public int RequestId { get; set; }       // Primary key
         public int EmpId { get; set; }           // Employee who applied
         public string? Name { get; set; } = string.Empty;
+        public string? Department { get; set; }
         public DateTime StartDate { get; set; }  // Leave start date
         public DateTime EndDate { get; set; }    // Leave end date
         public int NoOfDays { get; set; }        // Total leave days (calculated)

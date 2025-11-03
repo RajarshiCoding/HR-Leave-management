@@ -28,7 +28,17 @@ namespace HRManagementBackend.Services
         // Get leave by request ID
         public async Task<LeaveRequest?> GetLeaveByIdAsync(int requestId)
         {
-            var query = @"SELECT * FROM leave_requests WHERE ""RequestId"" = @Id";
+            var query = @"
+                        SELECT 
+                            lr.*,
+                            e.""Name"",
+                            e.""Department""
+                        FROM leave_requests lr
+                        INNER JOIN employees e
+                            ON lr.""EmpId"" = e.""EmpId""
+                        WHERE lr.""RequestId"" = @Id;
+                        ";
+
             using var connection = _context.CreateConnection();
             return await connection.QueryFirstOrDefaultAsync<LeaveRequest>(query, new { Id = requestId });
         }

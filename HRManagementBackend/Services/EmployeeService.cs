@@ -47,7 +47,7 @@ namespace HRManagementBackend.Services
                                     AND lr.""Status"" = 'Approved'
                                 THEN 'Inactive'
                                 ELSE 'Active'
-                            END AS ""status_emp""
+                            END AS ""Status""
                         FROM employees e
                         LEFT JOIN leave_requests lr
                             ON e.""EmpId"" = lr.""EmpId""
