@@ -5,7 +5,7 @@ using System.Data;
 
 namespace HRManagementBackend.Services
 {
-    public class EmployeeService
+    public class EmployeeService : IEmployeeService
     {
         private readonly DapperContext _context;
 

@@ -36,10 +36,10 @@ builder.Services.AddSwaggerGen(c =>
 
 // Services
 builder.Services.AddSingleton<DapperContext>();
-builder.Services.AddScoped<EmployeeService>();
-builder.Services.AddScoped<LeaveService>();
-builder.Services.AddScoped<HolidayService>();
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<ILeaveService, LeaveService>();
+builder.Services.AddScoped<IHolidayService, HolidayService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // 🔹 Add CORS for React
 builder.Services.AddCors(options =>

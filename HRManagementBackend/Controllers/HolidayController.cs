@@ -8,9 +8,9 @@ namespace HRManagementBackend.Controllers
     [Route("api/[controller]")]
     public class HolidayController : ControllerBase
     {
-        private readonly HolidayService _holidayService;
+        private readonly IHolidayService _holidayService;
 
-        public HolidayController(HolidayService holidayService)
+        public HolidayController(IHolidayService holidayService)
         {
             _holidayService = holidayService;
         }

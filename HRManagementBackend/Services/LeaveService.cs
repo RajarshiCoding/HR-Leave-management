@@ -5,7 +5,7 @@ using System.Data;
 
 namespace HRManagementBackend.Services
 {
-    public class LeaveService
+    public class LeaveService : ILeaveService
     {
         private readonly DapperContext _context;
 

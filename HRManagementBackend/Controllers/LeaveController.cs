@@ -8,9 +8,9 @@ namespace HRManagementBackend.Controllers
     [Route("api/[controller]")]
     public class LeaveController : ControllerBase
     {
-        private readonly LeaveService _leaveService;
+        private readonly ILeaveService _leaveService;
 
-        public LeaveController(LeaveService leaveService)
+        public LeaveController(ILeaveService leaveService)
         {
             _leaveService = leaveService;
         }

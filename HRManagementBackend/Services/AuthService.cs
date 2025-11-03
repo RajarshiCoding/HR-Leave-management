@@ -13,7 +13,7 @@ using BCrypt.Net;
 
 namespace HRManagementBackend.Services
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
         private readonly DapperContext _context;
         private readonly IConfiguration _config;
