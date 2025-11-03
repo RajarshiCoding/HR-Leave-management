@@ -23,6 +23,7 @@ interface Employee {
   leaveBalance: number;
   leaveTaken: number;
   status: string;
+  dob: string;
 }
 
 interface EmployeeDetailProps {
@@ -163,6 +164,14 @@ export function EmployeeDetail({ empId, open, onClose }: EmployeeDetailProps) {
 
             <p className="font-medium">Password Salt:</p>
             <p className="truncate">{employee.passwordSalt}</p> */}
+            <p className="font-medium">Date of birth:</p>
+            <p>
+              {new Date(employee.dob).toLocaleDateString("en-IN", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
           </div>
         ) : (
           <p className="text-center text-gray-500 py-8">No employee found</p>
