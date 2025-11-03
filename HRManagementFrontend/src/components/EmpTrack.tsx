@@ -68,7 +68,7 @@ function EmpTrack() {
           <BasicClock format12={true} />
         </div>
         {/* Content area */}
-        <div className="flex-1 h-full w-full bg-accent rounded-br-sm rounded-bl-sm flex flex-col">
+        <div className="flex-1 h-full w-full bg-accent rounded-br-sm rounded-bl-sm flex flex-col overflow-y-auto">
           {error ? (
             <h1>Error</h1>
           ) : (
@@ -85,41 +85,50 @@ function EmpTrack() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {leaveData.map((emp: any) => (
-                  <TableRow key={emp.requestId} className=" hover:bg-muted/50">
-                    <TableCell className="font-medium">
-                      {new Date(emp.appliedOn).toDateString()}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {new Date(emp.endDate).toDateString()}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {emp.hrNote
-                        ? emp.hrNote.slice(0, 20) +
-                          (emp.hrNote.length > 20 ? "..." : "")
-                        : ""}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {emp.reason
-                        ? emp.reason.slice(0, 20) +
-                          (emp.reason.length > 20 ? "..." : "")
-                        : ""}
-                    </TableCell>
-                    <TableCell
-                      className={
-                        emp.status === "Approved"
-                          ? "text-green-600"
-                          : emp.status === "Pending"
-                          ? "text-yellow-500"
-                          : emp.status === "Rejected"
-                          ? "text-red-500"
-                          : ""
-                      }
+                {leaveData
+                  ?.sort(
+                    (a: any, b: any) =>
+                      new Date(b.appliedOn).getTime() -
+                      new Date(a.appliedOn).getTime()
+                  )
+                  .map((emp: any) => (
+                    <TableRow
+                      key={emp.requestId}
+                      className=" hover:bg-muted/50"
                     >
-                      {emp.status}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      <TableCell className="font-medium">
+                        {new Date(emp.appliedOn).toDateString()}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {new Date(emp.endDate).toDateString()}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {emp.hrNote
+                          ? emp.hrNote.slice(0, 20) +
+                            (emp.hrNote.length > 20 ? "..." : "")
+                          : ""}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {emp.reason
+                          ? emp.reason.slice(0, 20) +
+                            (emp.reason.length > 20 ? "..." : "")
+                          : ""}
+                      </TableCell>
+                      <TableCell
+                        className={
+                          emp.status === "Approved"
+                            ? "text-green-600"
+                            : emp.status === "Pending"
+                            ? "text-yellow-500"
+                            : emp.status === "Rejected"
+                            ? "text-red-500"
+                            : ""
+                        }
+                      >
+                        {emp.status}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           )}

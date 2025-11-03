@@ -68,6 +68,36 @@ export function EmployeeDetail({ empId, open, onClose }: EmployeeDetailProps) {
     fetchEmployee();
   }, [empId, open]);
 
+  async function deleteEmp() {
+    setLoading(true);
+    setError(null);
+    if (!confirm(`Are you sure you want to delete the user ${empId}`)) {
+      setLoading(false);
+      onClose();
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No token found");
+
+      const res = await fetch(`http://localhost:5062/api/Employee/${empId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+    } catch (err: any) {
+      setError(err.message || `Failed to Delete employee ${empId}`);
+    } finally {
+      setLoading(false);
+      onClose();
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg rounded-2xl">
@@ -139,6 +169,9 @@ export function EmployeeDetail({ empId, open, onClose }: EmployeeDetailProps) {
         )}
 
         <DialogFooter>
+          <Button variant="destructive" onClick={deleteEmp}>
+            Delete
+          </Button>
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>
