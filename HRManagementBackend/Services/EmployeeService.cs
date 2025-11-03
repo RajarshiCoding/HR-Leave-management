@@ -40,22 +40,32 @@ namespace HRManagementBackend.Services
             //     (@Name, @Email, @PasswordHash, @PasswordSalt, @Department, @Designation, @Contact, @JoiningDate, @LeaveBalance, @LeaveTaken, @Status)
             //     RETURNING emp_id;
             // ";
+            var checkQuery = @"SELECT COUNT(*) FROM employees WHERE ""Email"" = @Email";
             var query = @"
                     INSERT INTO employees 
-                    (""Name"", ""Email"", ""PasswordHash"", ""PasswordSalt"", ""Department"", ""Designation"", ""Contact"", ""JoiningDate"", ""LeaveBalance"", ""LeaveTaken"", ""Status"",""DOB"")
+                    (""Name"", ""Email"", ""PasswordHash"",  ""Department"", ""Designation"", ""Contact"", ""JoiningDate"", ""LeaveBalance"", ""Status"",""DOB"")
                     VALUES
-                    (@Name, @Email, @PasswordHash, @PasswordSalt, @Department, @Designation, @Contact, @JoiningDate, @LeaveBalance, @LeaveTaken, 'Active', @DOB)
+                    (@Name, @Email, @PasswordHash,  @Department, @Designation, @Contact, @JoiningDate, @LeaveBalance, @Status , @DOB)
                     RETURNING ""EmpId"";
                 ";
 
 
             using var connection = _context.CreateConnection();
+
+            var exists = await connection.ExecuteScalarAsync<int>(checkQuery, new { employee.Email });
+            if (exists > 0)
+                return -1;
+
+            employee.PasswordHash = BCrypt.Net.BCrypt.HashPassword(employee.PasswordHash);
+            employee.Status = "Active";
+
             return await connection.ExecuteScalarAsync<int>(query, employee);
         }
 
         // Update employee info
         public async Task<bool> UpdateEmployeeAsync(Employee employee)
         {
+        //""LeaveTaken"" = @LeaveTaken,
         var query = @"
             UPDATE employees SET
                 ""Name"" = @Name,
@@ -64,7 +74,6 @@ namespace HRManagementBackend.Services
                 ""Designation"" = @Designation,
                 ""Contact"" = @Contact,
                 ""LeaveBalance"" = @LeaveBalance,
-                ""LeaveTaken"" = @LeaveTaken,
                 ""Status"" = @Status,
                 ""DOB"" = @DOB
             WHERE ""EmpId"" = @EmpId;

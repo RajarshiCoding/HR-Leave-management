@@ -6,8 +6,8 @@ namespace HRManagementBackend.Models
         public int EmpId { get; set; }                // Primary key
         public required string Name { get; set; }              // Employee full name
         public required string Email { get; set; }             // Unique email
-        public string? PasswordHash { get; set; }      // Hashed password
-        public string? PasswordSalt { get; set; }      // Salt for password hashing
+        public required string PasswordHash { get; set; }      // Hashed password
+        // public string? PasswordSalt { get; set; }      // Salt for password hashing
         public required string Department { get; set; }        // Department name
         public required string Designation { get; set; }      // Role or designation
         public required string Contact { get; set; }          // Contact number

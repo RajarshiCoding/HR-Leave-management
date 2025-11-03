@@ -35,7 +35,8 @@ const formSchema = z.object({
       "Phone number must be exactly 10 digits and contain only numbers"
     ),
 
-  password: z.string().min(1, "Date of Birth is required"),
+  // password: z.string().min(1, "Password is required"),
+  dob: z.string().min(1, "Date of Birth is required"),
 });
 
 const departments = [
@@ -66,7 +67,8 @@ export default function AddEmployees() {
       email: "",
       designation: "",
       contact: "",
-      password: "",
+      dob: "",
+      // password: "",
     },
   });
 
@@ -77,13 +79,21 @@ export default function AddEmployees() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:5062/api/auth/register", {
+      const payload = {
+        ...values,
+        passwordHash: values.dob, // 👈 Use DOB as password
+      };
+
+      console.log(payload);
+      console.log("🚀 Sending payload:", payload);
+
+      const res = await fetch("http://localhost:5062/api/employee", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error("Failed to add employee");
@@ -236,7 +246,7 @@ export default function AddEmployees() {
             {/* ✅ Date of Birth */}
             <FormField
               control={form.control}
-              name="password"
+              name="dob"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Date of Birth</FormLabel>

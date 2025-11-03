@@ -14,8 +14,8 @@ interface Employee {
   empId: number;
   name: string;
   email: string;
-  passwordHash: string;
-  passwordSalt: string;
+  // passwordHash: string;
+  // passwordSalt: string;
   department: string;
   designation: string;
   contact: string;
@@ -158,11 +158,11 @@ export function EmployeeDetail({ empId, open, onClose }: EmployeeDetailProps) {
               {employee.status}
             </p>
 
-            <p className="font-medium">Password Hash:</p>
+            {/* <p className="font-medium">Password Hash:</p>
             <p className="truncate">{employee.passwordHash}</p>
 
             <p className="font-medium">Password Salt:</p>
-            <p className="truncate">{employee.passwordSalt}</p>
+            <p className="truncate">{employee.passwordSalt}</p> */}
           </div>
         ) : (
           <p className="text-center text-gray-500 py-8">No employee found</p>
