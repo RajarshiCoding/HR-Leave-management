@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Eye } from "lucide-react";
+import { Info } from "lucide-react";
 
 export function LeaveRequestDialog({
   requestId,
@@ -127,7 +127,7 @@ export function LeaveRequestDialog({
           className="text-blue-600 border-blue-600 hover:bg-blue-300 hover:text-blue-900"
           onClick={() => setOpen(true)}
         >
-          <Eye />
+          <Info />
         </Button>
       </DialogTrigger>
 

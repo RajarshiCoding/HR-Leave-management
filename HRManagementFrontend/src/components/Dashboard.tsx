@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Sidebar } from "./Sidebar";
 import BasicClock from "./ui/clock";
 
-import { CirclePlus, Eye } from "lucide-react";
+import { CirclePlus, Info } from "lucide-react";
 
 import {
   Table,
@@ -129,7 +129,7 @@ const Dashboard: React.FC = () => {
                           variant={"ghost"}
                           onClick={() => handleOpen(emp.empId)}
                         >
-                          <Eye></Eye>
+                          <Info />
                         </Button>
                       </TableCell>
                     </TableRow>

@@ -56,7 +56,7 @@ namespace HRManagementBackend.Services
                             Row("Date of Birth:", employee.DOB.ToString("yyyy-MM-dd"));
                             Row("Leave Balance:", employee.LeaveBalance.ToString());
                             Row("Leave Taken:", employee.LeaveTaken.ToString());
-                            Row("Status:", employee.Status ?? "N/A");
+                            // Row("Status:", employee.Status ?? "N/A");
 
                             static IContainer CellStyle(IContainer container) =>
                                 container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);

@@ -70,7 +70,6 @@ namespace HRManagementBackend.Controllers
             if (dto == null)
                 return BadRequest(new { message = "Invalid status data" });
 
-            //********
             var leave = await _leaveService.GetLeaveByIdAsync(requestId);
             if (leave == null)
                 return NotFound(new { message = "Leave request not found" });
@@ -84,7 +83,8 @@ namespace HRManagementBackend.Controllers
 
             return NoContent();
         }
-
+        
+        // GET: api/leave/update/{requestId}
         [Authorize(Roles = "HR")]
         [HttpPut("update/{requestId}")]
         public async Task<IActionResult> UpdateLeaveCounter(int requestId)
