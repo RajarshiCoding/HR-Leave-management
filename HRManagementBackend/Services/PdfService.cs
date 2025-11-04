@@ -7,7 +7,7 @@ using System.IO;
 
 namespace HRManagementBackend.Services
 {
-    public class PdfService
+    public class PdfService : IPdfService
     {
         public byte[] GenerateEmployeeReport(Employee employee, IEnumerable<LeaveRequest> leaves)
         {

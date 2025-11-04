@@ -11,9 +11,9 @@ namespace HRManagementBackend.Controllers
     {
         private readonly IEmployeeService _employeeService;
         private readonly ILeaveService _leaveService;
-        private readonly PdfService _pdfService;
+        private readonly IPdfService _pdfService;
 
-        public EmployeeController(IEmployeeService employeeService, ILeaveService leaveService, PdfService pdfService)
+        public EmployeeController(IEmployeeService employeeService, ILeaveService leaveService, IPdfService pdfService)
         {
             _employeeService = employeeService;
             _leaveService = leaveService;

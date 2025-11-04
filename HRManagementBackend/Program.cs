@@ -43,7 +43,7 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddScoped<IHolidayService, HolidayService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<PdfService>();
+builder.Services.AddScoped<IPdfService, PdfService>();
 
 // 🔹 Add CORS for React
 builder.Services.AddCors(options =>
