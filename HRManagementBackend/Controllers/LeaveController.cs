@@ -1,5 +1,6 @@
 using HRManagementBackend.Models;
 using HRManagementBackend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRManagementBackend.Controllers
@@ -35,6 +36,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // GET: api/leave/employee/{empId}
+        [Authorize]
         [HttpGet("employee/{empId}")]
         public async Task<IActionResult> GetLeavesByEmployee(int empId)
         {
@@ -43,6 +45,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // POST: api/leave
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddLeave([FromBody] LeaveRequest leave)
         {

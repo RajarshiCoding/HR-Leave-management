@@ -30,6 +30,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // GET: api/employee/{id}
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployeeById(int id)
         {

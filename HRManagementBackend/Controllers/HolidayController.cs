@@ -1,5 +1,6 @@
 using HRManagementBackend.Models;
 using HRManagementBackend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRManagementBackend.Controllers
@@ -16,6 +17,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // GET: api/holiday
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllHolidays()
         {
