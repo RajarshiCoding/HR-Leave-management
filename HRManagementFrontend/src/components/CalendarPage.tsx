@@ -27,7 +27,17 @@ export default function CalendarPage() {
 
   const fetchHolidays = async () => {
     try {
-      const res = await fetch("http://localhost:5062/api/Holiday");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token found in localStorage");
+        return;
+      }
+      const res = await fetch("http://localhost:5062/api/Holiday", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await res.json();
 
       setHolidays(data);

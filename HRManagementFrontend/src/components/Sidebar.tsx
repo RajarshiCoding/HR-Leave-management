@@ -45,7 +45,12 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
 
         const isAnyResponse = await fetch(
           "http://localhost:5062/api/leave/isAny",
-          { method: "GET" }
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
         if (!isAnyResponse.ok) {

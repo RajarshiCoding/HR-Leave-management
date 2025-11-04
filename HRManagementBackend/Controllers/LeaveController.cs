@@ -17,6 +17,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // GET: api/leave
+        [Authorize(Roles = "HR")]
         [HttpGet]
         public async Task<IActionResult> GetAllLeaves()
         {
@@ -25,6 +26,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // GET: api/leave/{requestId}
+        [Authorize(Roles = "HR")]
         [HttpGet("{requestId}")]
         public async Task<IActionResult> GetLeaveById(int requestId)
         {
@@ -61,6 +63,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // PUT: api/leave/{requestId}
+        [Authorize(Roles = "HR")]
         [HttpPut("{requestId}")]
         public async Task<IActionResult> UpdateLeaveStatus(int requestId, [FromBody] LeaveStatusUpdateDto dto)
         {
@@ -82,6 +85,7 @@ namespace HRManagementBackend.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "HR")]
         [HttpPut("update/{requestId}")]
         public async Task<IActionResult> UpdateLeaveCounter(int requestId)
         {
@@ -92,6 +96,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // GET: api/leave/isAny
+        [Authorize(Roles = "HR")]
         [HttpGet("isAny")]
         public async Task<IActionResult> HasPendingLeaves()
         {

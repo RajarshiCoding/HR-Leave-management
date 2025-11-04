@@ -54,7 +54,17 @@ function EmpDashboard() {
 
   const fetchNextHoliday = async () => {
     try {
-      const response = await fetch("http://localhost:5062/api/holiday");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("No token found in localStorage");
+        return;
+      }
+      const response = await fetch("http://localhost:5062/api/holiday", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
 
       if (!response.ok) {

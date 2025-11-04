@@ -26,6 +26,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // GET: api/holiday/{date}
+        [Authorize]
         [HttpGet("{date}")]
         public async Task<IActionResult> GetHolidayByDate(DateTime date)
         {
@@ -33,10 +34,11 @@ namespace HRManagementBackend.Controllers
             if (holidays == null)
                 return NotFound();
 
-            return Ok(holidays);    
+            return Ok(holidays);
         }
 
         // POST: api/holiday
+        [Authorize(Roles = "HR")]
         [HttpPost]
         public async Task<IActionResult> AddHoliday([FromBody] Holiday holiday)
         {
@@ -49,6 +51,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // PUT: api/holiday/{date}
+        [Authorize(Roles = "HR")]
         [HttpPut("{date}")]
         public async Task<IActionResult> UpdateHoliday(DateTime date, [FromBody] HolidayUpdateDto dto)
         {
@@ -71,6 +74,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // DELETE: api/holiday/{date}
+        [Authorize(Roles = "HR")]
         [HttpDelete("{date}")]
         public async Task<IActionResult> DeleteHoliday(DateTime date)
         {

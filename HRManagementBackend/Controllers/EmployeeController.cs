@@ -41,6 +41,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // POST: api/employee
+        [Authorize(Roles = "HR")]
         [HttpPost]
         public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
         {
@@ -69,6 +70,7 @@ namespace HRManagementBackend.Controllers
         //******************************************************************************
 
         // PUT: api/employee/{id}
+        [Authorize(Roles = "HR")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEmployee(int id, [FromBody] EmployeeUpdateDto dto)
         {
@@ -98,6 +100,7 @@ namespace HRManagementBackend.Controllers
 
 
         // DELETE: api/employee/{id}
+        [Authorize(Roles = "HR")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
@@ -109,6 +112,7 @@ namespace HRManagementBackend.Controllers
         }
 
         // GET: api/employee/{id}/report
+        [Authorize(Roles = "HR")]
         [HttpGet("{id}/report")]
         public async Task<IActionResult> GetEmployeeReport(int id)
         {
