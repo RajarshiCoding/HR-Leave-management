@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Q9j8wJIjHVA=",
+  "dgSpecHash": "AK0s/2d0cNU=",
   "success": true,
   "projectFilePath": "D:\\Rajarshi\\HR Leave file\\HRManagementBackend\\HRManagementBackend.csproj",
   "expectedPackageFiles": [
@@ -49,6 +49,7 @@
     "C:\\Users\\dell\\.nuget\\packages\\microsoft.openapi\\1.6.14\\microsoft.openapi.1.6.14.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\microsoft.win32.registry\\4.5.0\\microsoft.win32.registry.4.5.0.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\npgsql\\9.0.4\\npgsql.9.0.4.nupkg.sha512",
+    "C:\\Users\\dell\\.nuget\\packages\\questpdf\\2025.7.4\\questpdf.2025.7.4.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\swashbuckle.aspnetcore\\6.6.1\\swashbuckle.aspnetcore.6.6.1.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.6.1\\swashbuckle.aspnetcore.swagger.6.6.1.nupkg.sha512",
     "C:\\Users\\dell\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.6.1\\swashbuckle.aspnetcore.swaggergen.6.6.1.nupkg.sha512",

@@ -10,10 +10,14 @@ namespace HRManagementBackend.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeService _employeeService;
+        private readonly ILeaveService _leaveService;
+        private readonly PdfService _pdfService;
 
-        public EmployeeController(IEmployeeService employeeService)
+        public EmployeeController(IEmployeeService employeeService, ILeaveService leaveService, PdfService pdfService)
         {
             _employeeService = employeeService;
+            _leaveService = leaveService;
+            _pdfService = pdfService;
         }
 
         // GET: api/employee
@@ -102,5 +106,26 @@ namespace HRManagementBackend.Controllers
 
             return NoContent();
         }
+
+        // GET: api/employee/{id}/report
+        [HttpGet("{id}/report")]
+        public async Task<IActionResult> GetEmployeeReport(int id)
+        {
+            var employee = await _employeeService.GetEmployeeByIdAsync(id);
+            if (employee == null)
+                return NotFound(new { message = "Employee not found" });
+
+            var leaves = await _leaveService.GetLeavesByEmployeeIdAsync(id);
+
+            var pdfBytes = _pdfService.GenerateEmployeeReport(employee, leaves);
+
+            var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+            var fileName = $"{employee.Name}_{employee.EmpId}_{currentDate}_Report.pdf";
+
+
+            return File(pdfBytes, "application/pdf", fileName);
+        }
+
+
     }
 }

@@ -69,6 +69,57 @@ export function EmployeeDetail({ empId, open, onClose }: EmployeeDetailProps) {
     fetchEmployee();
   }, [empId, open]);
 
+  const downloadEmployeeReport = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No token found");
+
+      const res = await fetch(
+        `http://localhost:5062/api/Employee/${empId}/report`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+
+      // Convert response to Blob
+      const blob = await res.blob();
+
+      // Try to read filename from response header
+      // const disposition = res.headers.get("Content-Disposition");
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, "0");
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const yyyy = today.getFullYear();
+      const formattedDate = `${dd}-${mm}-${yyyy}`;
+
+      // ✅ Build custom filename
+      const fileName = `${empId}_${formattedDate}_Report.pdf`;
+
+      // if (disposition && disposition.includes("filename=")) {
+      //   fileName = disposition.split("filename=")[1].replace(/"/g, "");
+      //   console.log(fileName);
+      // }
+
+      // Create a temporary download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      console.error("Failed to download report:", err);
+      alert(err.message || "Failed to download report");
+    }
+  };
+
   async function deleteEmp() {
     setLoading(true);
     setError(null);
@@ -178,6 +229,9 @@ export function EmployeeDetail({ empId, open, onClose }: EmployeeDetailProps) {
         )}
 
         <DialogFooter>
+          <Button variant={"secondary"} onClick={downloadEmployeeReport}>
+            Report
+          </Button>
           <Button variant="destructive" onClick={deleteEmp}>
             Delete
           </Button>
