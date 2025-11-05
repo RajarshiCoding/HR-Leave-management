@@ -78,6 +78,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddHostedService<RecurringUpdateService>();
+
 var app = builder.Build();
 
 app.UseExceptionHandler(errorApp =>

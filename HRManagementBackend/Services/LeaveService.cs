@@ -159,9 +159,14 @@ namespace HRManagementBackend.Services
         public async Task<bool> UpdateLeaveCounterAsync(int requestId, int days)
         {
             var query = @"
-               UPDATE employees
-               SET ""LeaveBalance"" = ""LeaveBalance"" - @Days WHERE ""EmpId"" = (
-               SELECT ""EmpId"" FROM leave_requests WHERE ""RequestId"" = @Id);";
+                UPDATE employees
+                SET 
+                    ""LeaveBalance"" = ""LeaveBalance"" - @Days,
+                    ""LeaveTaken""   = ""LeaveTaken"" + @Days
+                WHERE ""EmpId"" = (
+                    SELECT ""EmpId"" FROM leave_requests WHERE ""RequestId"" = @Id
+                );";
+
 
             try
             {   

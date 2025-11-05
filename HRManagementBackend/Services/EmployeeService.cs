@@ -18,19 +18,20 @@ namespace HRManagementBackend.Services
         public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
         {
             var query = @"
-                SELECT 
-                    e.*,
-                    CASE 
-                        WHEN CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate""
-                            AND lr.""Status"" = 'Approved'
-                        THEN 'On Leave'
-                        ELSE 'In Office'
-                    END AS ""Status""
-                FROM employees e
-                LEFT JOIN leave_requests lr
-                    ON e.""EmpId"" = lr.""EmpId""
-                    AND CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate"";
-            ";
+                        SELECT 
+                        e.*,
+                        CASE 
+                            WHEN EXISTS (
+                                SELECT 1
+                                FROM leave_requests lr
+                                WHERE lr.""EmpId"" = e.""EmpId""
+                                AND lr.""Status"" = 'Approved'
+                                AND CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate""
+                            )
+                            THEN 'On Leave'
+                            ELSE 'In Office'
+                        END AS ""Status""
+                    FROM employees e;";
             try
             {
                 using var connection = _context.CreateConnection();
@@ -46,20 +47,22 @@ namespace HRManagementBackend.Services
         public async Task<Employee?> GetEmployeeByIdAsync(int empId)
         {
             var query = @"
-                SELECT 
-                    e.*,
-                    CASE 
-                        WHEN CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate""
-                            AND lr.""Status"" = 'Approved'
-                        THEN 'On Leave'
-                        ELSE 'In Office'
-                    END AS ""Status""
-                FROM employees e
-                LEFT JOIN leave_requests lr
-                    ON e.""EmpId"" = lr.""EmpId""
-                    AND CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate""
-                WHERE e.""EmpId"" = @Id;
-            ";
+                        SELECT 
+                        e.*,
+                        CASE 
+                            WHEN EXISTS (
+                                SELECT 1
+                                FROM leave_requests lr
+                                WHERE lr.""EmpId"" = e.""EmpId""
+                                AND lr.""Status"" = 'Approved'
+                                AND CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate""
+                            )
+                            THEN 'On Leave'
+                            ELSE 'In Office'
+                        END AS ""Status""
+                    FROM employees e
+                    WHERE e.""EmpId"" = @Id;
+                                ";
             try
             {
                 using var connection = _context.CreateConnection();

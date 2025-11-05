@@ -85,7 +85,7 @@ namespace HRManagementBackend.Controllers
                     return CreatedAtAction(nameof(GetLeaveById), new { requestId = result }, new { requestId = result });
 
                 else if (result == 0)
-                    return NoContent(); // 204 - no data inserted
+                    return NoContent(); 
 
                 else if (result == -1)
                     return BadRequest(new { message = "Failed to add leave request. Invalid data or duplicate entry." });

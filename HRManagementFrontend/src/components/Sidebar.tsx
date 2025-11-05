@@ -8,6 +8,7 @@ import {
   LogOut,
   ClipboardList,
   List,
+  LockKeyholeOpen,
 } from "lucide-react";
 import {
   Tooltip,
@@ -186,6 +187,23 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
             <p>Click to log out</p>
           </TooltipContent>
         </Tooltip>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button
+              variant={"outline"}
+              className="rounded-full w-12 h-12 p-0 flex items-center justify-center"
+              onClick={handleChangePass}
+            >
+              <LockKeyholeOpen />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Click to log out</p>
+          </TooltipContent>
+        </Tooltip>
+        <Button>
+          <LockKeyholeOpen />
+        </Button>
       </div>
     </aside>
   );
