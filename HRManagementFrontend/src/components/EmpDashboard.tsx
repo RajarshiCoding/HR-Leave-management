@@ -7,6 +7,7 @@ import { LeaveRequestDialog } from "./LeaveRequestDialog";
 function EmpDashboard() {
   const [employeeData, setEmployeeData] = useState<any | null>(null);
   const [nextHoliday, setNextHoliday] = useState<any | null>(null);
+  const [holidayList, setHolidayList] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -66,6 +67,9 @@ function EmpDashboard() {
         },
       });
       const data = await response.json();
+
+      const parsedDates = data.map((h: any) => new Date(h.date));
+      setHolidayList(parsedDates);
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);

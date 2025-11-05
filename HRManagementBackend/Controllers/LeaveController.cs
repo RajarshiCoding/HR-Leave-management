@@ -87,9 +87,9 @@ namespace HRManagementBackend.Controllers
         // GET: api/leave/update/{requestId}
         [Authorize(Roles = "HR")]
         [HttpPut("update/{requestId}")]
-        public async Task<IActionResult> UpdateLeaveCounter(int requestId)
+        public async Task<IActionResult> UpdateLeaveCounter(int requestId, [FromBody] int days)
         {
-            var updated = await _leaveService.UpdateLeaveCounterAsync(requestId);
+            var updated = await _leaveService.UpdateLeaveCounterAsync(requestId,days);
             if (!updated)
                 return NotFound(new { message = "Cannot update!!" });
             return NoContent();
@@ -104,6 +104,4 @@ namespace HRManagementBackend.Controllers
             return Ok(new { hasPending });
         }
     }
-
-    
 }

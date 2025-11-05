@@ -99,6 +99,13 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
               <Calendar
                 mode="single"
                 selected={startDate}
+                modifiers={{
+                  weekend: (day) => day.getDay() === 0 || day.getDay() === 6,
+                }}
+                modifiersClassNames={{
+                  weekend:
+                    "bg-pink-100 text-pink-800 font-semibold hover:!bg-pink-100 rounded-md",
+                }}
                 onSelect={(date) =>
                   date && setStartDate(date) && setEndDate(date)
                 }
@@ -128,8 +135,15 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
               <Calendar
                 mode="single"
                 selected={endDate}
+                modifiers={{
+                  weekend: (day) => day.getDay() === 0 || day.getDay() === 6,
+                }}
+                modifiersClassNames={{
+                  weekend:
+                    "bg-pink-100 text-pink-800 font-semibold hover:!bg-pink-100 rounded-md",
+                }}
                 onSelect={(date) => date && setEndDate(date)}
-                disabled={(date) => date <= startDate}
+                disabled={(date) => date < startDate}
               />
             </PopoverContent>
           </Popover>

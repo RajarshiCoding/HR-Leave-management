@@ -54,18 +54,49 @@ namespace HRManagementBackend.Services
         // Add new leave request
         public async Task<int> AddLeaveAsync(LeaveRequest leave)
         {
+            if (leave.EndDate < leave.StartDate)
+                throw new ArgumentException("End date must be greater than or equal to start date.");
+
+            // ✅ Get all holidays
+            var getHolidayquery = @"SELECT * FROM holidays ORDER BY ""Date""";
+            using var connection = _context.CreateConnection();
+            var holidays = await connection.QueryAsync<Holiday>(getHolidayquery);
+
+            var holidayDates = holidays.Select(h => h.Date.Date).ToHashSet();
+
+            // ✅ Calculate working days
+            int workingDays = 0;
+            DateTime currentDate = leave.StartDate.Date;
+
+            while (currentDate <= leave.EndDate.Date)
+            {
+                bool isWeekend = currentDate.DayOfWeek == DayOfWeek.Saturday ||
+                                currentDate.DayOfWeek == DayOfWeek.Sunday;
+
+                bool isHoliday = holidayDates.Contains(currentDate);
+
+                if (!isWeekend && !isHoliday)
+                    workingDays++;
+
+                currentDate = currentDate.AddDays(1);
+            }
+
+            // ✅ Set computed days in the leave model
+            leave.NoOfDays = workingDays;
+            leave.AppliedOn = DateTime.Now;
+
+            // ✅ Insert leave request
             var query = @"
                 INSERT INTO leave_requests
-                (""EmpId"", ""StartDate"", ""EndDate"", ""Reason"", ""Status"", ""AppliedOn"")
+                (""EmpId"", ""StartDate"", ""EndDate"", ""NoOfDays"", ""Reason"", ""Status"", ""AppliedOn"") 
                 VALUES
-                (@EmpId, @StartDate, @EndDate, @Reason, @Status, @AppliedOn)
+                (@EmpId, @StartDate, @EndDate, @NoOfDays, @Reason, @Status, @AppliedOn) 
                 RETURNING ""RequestId"";
             ";
 
-
-            using var connection = _context.CreateConnection();
             return await connection.ExecuteScalarAsync<int>(query, leave);
         }
+
 
         // Update leave request status (approve/reject)
         public async Task<bool> UpdateLeaveStatusAsync(LeaveRequest leave)
@@ -83,16 +114,17 @@ namespace HRManagementBackend.Services
         }
 
 
-        public async Task<bool> UpdateLeaveCounterAsync(int requestId)
+        public async Task<bool> UpdateLeaveCounterAsync(int requestId, int days)
         {
             var query = @"
                UPDATE employees
-               SET ""LeaveBalance"" = ""LeaveBalance"" - 1 WHERE ""EmpId"" = (
+               SET ""LeaveBalance"" = ""LeaveBalance"" - @Days WHERE ""EmpId"" = (
                SELECT ""EmpId"" FROM leave_requests WHERE ""RequestId"" = @Id);";
 
 
             using var connection = _context.CreateConnection();
-            var affectedRows = await connection.ExecuteAsync(query, new { Id = requestId });
+            var affectedRows = await connection.ExecuteAsync(query, new { Id = requestId, Days = days });
+            // System.Console.WriteLine(affectedRows);
             return affectedRows > 0;
         }
 

@@ -232,7 +232,11 @@ export function EmployeeDetail({ empId, open, onClose }: EmployeeDetailProps) {
           <Button variant={"secondary"} onClick={downloadEmployeeReport}>
             Report
           </Button>
-          <Button variant="destructive" onClick={deleteEmp}>
+          <Button
+            variant="destructive"
+            onClick={deleteEmp}
+            disabled={empId === Number(localStorage.getItem("empId"))}
+          >
             Delete
           </Button>
           <Button variant="outline" onClick={onClose}>

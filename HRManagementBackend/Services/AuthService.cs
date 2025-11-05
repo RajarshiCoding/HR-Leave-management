@@ -70,10 +70,6 @@ namespace HRManagementBackend.Services
             if (exists > 0)
                 return false;
 
-            // ✅ Generate password hash and salt
-            // var salt = Guid.NewGuid().ToString("N"); // or a more secure random generator
-            // var passwordHash = Convert.ToBase64String(Encoding.UTF8.GetBytes(request.Password + salt));
-
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             await connection.ExecuteAsync(insertQuery, new

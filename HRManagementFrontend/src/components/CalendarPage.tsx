@@ -89,11 +89,14 @@ export default function CalendarPage() {
           className="rounded-lg border [--cell-size:--spacing(11)] md:[--cell-size:--spacing(12)] "
           modifiers={{
             holiday: holidayList,
+            weekend: (day) => day.getDay() === 0 || day.getDay() === 6,
           }}
           showOutsideDays={false}
           modifiersClassNames={{
             holiday:
-              "text-red-500 font-extrabold rounded-md bg-red-100 hover:!bg-red-200",
+              "text-red-500 font-extrabold rounded-md bg-red-200 hover:!bg-red-200",
+            weekend:
+              "bg-pink-100 text-pink-800 font-semibold hover:!bg-pink-100 rounded-md",
           }}
         />
 

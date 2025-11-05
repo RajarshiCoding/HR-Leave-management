@@ -12,7 +12,7 @@ namespace HRManagementBackend.Services
         Task<IEnumerable<LeaveRequest>> GetLeavesByEmployeeIdAsync(int empId);
         Task<int> AddLeaveAsync(LeaveRequest leave);
         Task<bool> UpdateLeaveStatusAsync(LeaveRequest leave);
-        Task<bool> UpdateLeaveCounterAsync(int requestId);
+        Task<bool> UpdateLeaveCounterAsync(int requestId, int days);
         Task<bool> HasPendingRequestsAsync();
     }
 }

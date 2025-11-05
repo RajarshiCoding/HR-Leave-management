@@ -60,10 +60,15 @@ export default function LeavePage() {
       if (!response.ok) {
         throw new Error(`Failed to update leave: ${await response.text()}`);
       } else if (response.ok && status === "Approved") {
+        const employee = employeeData.find(
+          (item) => item.requestId === requestId
+        );
+        console.log(employee.noOfDays);
         const update = await fetch(
           `http://localhost:5062/api/leave/update/${requestId}`,
           {
             method: "PUT",
+            body: JSON.stringify(employee.noOfDays),
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
@@ -72,7 +77,9 @@ export default function LeavePage() {
         );
         if (!update.ok) {
           throw new Error(
-            `Failed to update leave count: ${await update.text()}`
+            `Failed to update leave count: ${await update.text()},${
+              update.status
+            }`
           );
         }
       }
@@ -98,7 +105,6 @@ export default function LeavePage() {
         },
       });
       const data = await response.json();
-      console.log(data);
       // console.log(data);
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);

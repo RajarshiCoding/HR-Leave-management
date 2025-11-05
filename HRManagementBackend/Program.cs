@@ -40,8 +40,8 @@ builder.Services.AddSwaggerGen(c =>
 // Services
 builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddScoped<IHolidayService, HolidayService>();
+builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
 
