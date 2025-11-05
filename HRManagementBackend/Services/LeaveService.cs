@@ -76,7 +76,8 @@ namespace HRManagementBackend.Services
 
             // ✅ Get all holidays
             var getHolidayquery = @"SELECT * FROM holidays ORDER BY ""Date""";
-            var checkQuery = @"SELECT ""NoOfDays"" FROM leave_requests WHERE ""RequestId"" = @Id;";
+            // var checkQuery = @"SELECT ""NoOfDays"" FROM leave_requests WHERE ""RequestId"" = @Id;";
+            var checkQuery = @"SELECT ""LeaveBalance"" FROM employees WHERE ""EmpId"" = @Id;";
             // ✅ Insert leave request
             var query = @"
                 INSERT INTO leave_requests
@@ -111,7 +112,9 @@ namespace HRManagementBackend.Services
                     currentDate = currentDate.AddDays(1);
                 }
 
-                var checkNoOfDays = await connection.QuerySingleOrDefaultAsync<int>(checkQuery, new { Id = leave.RequestId });
+                var checkNoOfDays = await connection.QuerySingleOrDefaultAsync<int>(checkQuery, new { Id = leave.EmpId });
+                System.Console.WriteLine(checkNoOfDays);
+                System.Console.WriteLine(workingDays);
                 if(checkNoOfDays >= workingDays)
                 {
                     // ✅ Set computed days in the leave model
