@@ -43,11 +43,13 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
 
     const leaveData = {
       empId,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
+      startDate: new Date(startDate.getTime() + 19800000).toISOString(),
+      endDate: new Date(endDate.getTime() + 19800000).toISOString(),
       reason,
       status: "Pending",
-      appliedOn: new Date().toISOString(),
+      appliedOn: new Date(
+        new Date().getTime() - new Date().getTimezoneOffset() * 60000
+      ).toISOString(),
     };
 
     try {
@@ -114,48 +116,58 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
                   weekend:
                     "bg-pink-100 text-pink-800 font-semibold hover:!bg-pink-100 rounded-md",
                 }}
-                onSelect={(date) =>
-                  date && setStartDate(date) && setEndDate(date)
-                }
-                disabled={(date) => date <= today}
+                onSelect={(date) => {
+                  if (date) {
+                    setStartDate(date);
+                    setEndDate(date); // Default end date = start date
+                  }
+                }}
+                disabled={(date) => date < today} //change to <= if do not want today, < if want today
               />
             </PopoverContent>
           </Popover>
         </div>
 
-        {/* End Date */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium">End Date</label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !endDate && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {endDate ? format(endDate, "PPP") : "Pick a date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="start" className="p-0">
-              <Calendar
-                mode="single"
-                selected={endDate}
-                modifiers={{
-                  weekend: (day) => day.getDay() === 0 || day.getDay() === 6,
-                }}
-                modifiersClassNames={{
-                  weekend:
-                    "bg-pink-100 text-pink-800 font-semibold hover:!bg-pink-100 rounded-md",
-                }}
-                onSelect={(date) => date && setEndDate(date)}
-                disabled={(date) => date < startDate}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
+        {/* End Date (visible only after Start Date is selected) */}
+        {startDate && (
+          <div className="space-y-2">
+            <label className="text-sm font-medium">End Date</label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !endDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {endDate ? format(endDate, "PPP") : "Pick a date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="p-0">
+                <Calendar
+                  mode="single"
+                  selected={endDate || startDate}
+                  modifiers={{
+                    weekend: (day) => day.getDay() === 0 || day.getDay() === 6,
+                  }}
+                  modifiersClassNames={{
+                    weekend:
+                      "bg-pink-100 text-pink-800 font-semibold hover:!bg-pink-100 rounded-md",
+                  }}
+                  onSelect={(date) => date && setEndDate(date)}
+                  disabled={(date) => {
+                    if (!startDate) return true;
+                    const maxDate = new Date(startDate);
+                    maxDate.setDate(startDate.getDate() + 30); // +30 days
+                    return date < startDate || date > maxDate;
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        )}
 
         {/* Reason */}
         <div className="space-y-2">
