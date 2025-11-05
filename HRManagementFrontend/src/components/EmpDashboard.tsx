@@ -3,13 +3,14 @@ import { Sidebar } from "./Sidebar";
 import BasicClock from "./ui/clock";
 import { Button } from "./ui/button";
 import { LeaveRequestDialog } from "./LeaveRequestDialog";
+import HolidayDialog from "./ui/holidayDialog";
 
 function EmpDashboard() {
   const [employeeData, setEmployeeData] = useState<any | null>(null);
   const [nextHoliday, setNextHoliday] = useState<any | null>(null);
-  const [holidayList, setHolidayList] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleLeaveRequest = () => {
     setDialogOpen(true);
@@ -67,9 +68,6 @@ function EmpDashboard() {
         },
       });
       const data = await response.json();
-
-      const parsedDates = data.map((h: any) => new Date(h.date));
-      setHolidayList(parsedDates);
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
@@ -130,7 +128,10 @@ function EmpDashboard() {
             {/* Right Div */}
             <div className="flex-1 bg-white m-2 rounded-lg shadow-md flex items-center justify-center">
               {nextHoliday && Object.keys(nextHoliday).length > 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center">
+                <div
+                  className="flex-1 flex flex-col items-center justify-center cursor-pointer"
+                  onClick={() => setOpen(true)}
+                >
                   <strong>
                     <h2>Next Holiday:</h2>
                   </strong>
@@ -148,6 +149,9 @@ function EmpDashboard() {
               ) : (
                 <p>No upcoming holidays 🎉</p>
               )}
+
+              {/* ✅ Keep dialog outside so it doesn't unmount/remount */}
+              <HolidayDialog open={open} onOpenChange={setOpen} />
             </div>
           </div>
 

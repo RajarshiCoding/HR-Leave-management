@@ -115,7 +115,7 @@ namespace HRManagementBackend.Services
                 var checkNoOfDays = await connection.QuerySingleOrDefaultAsync<int>(checkQuery, new { Id = leave.EmpId });
                 System.Console.WriteLine(checkNoOfDays);
                 System.Console.WriteLine(workingDays);
-                if(checkNoOfDays >= workingDays)
+                if(checkNoOfDays >= workingDays && workingDays <= 10)
                 {
                     // ✅ Set computed days in the leave model
                     leave.NoOfDays = workingDays;

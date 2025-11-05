@@ -132,13 +132,20 @@ export default function CalendarPage() {
                     }
 
                     try {
+                      const token = localStorage.getItem("token");
+                      if (!token) {
+                        console.log("No token found in localStorage");
+                        return;
+                      }
                       const res = await fetch(
                         "http://localhost:5062/api/Holiday",
                         {
                           method: "POST",
                           headers: {
                             "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
                           },
+
                           body: JSON.stringify({
                             title,
                             description,
@@ -148,7 +155,7 @@ export default function CalendarPage() {
                           }),
                         }
                       );
-
+                      console.log(res.status, res.statusText);
                       if (!res.ok) throw new Error("Failed to add holiday");
 
                       // const newHoliday = await res.json();
@@ -245,6 +252,11 @@ export default function CalendarPage() {
                     // }
 
                     try {
+                      const token = localStorage.getItem("token");
+                      if (!token) {
+                        console.log("No token found in localStorage");
+                        return;
+                      }
                       const res = await fetch(
                         `http://localhost:5062/api/Holiday/${
                           new Date(date.getTime() + 19800000)
@@ -255,6 +267,7 @@ export default function CalendarPage() {
                           method: "PUT",
                           headers: {
                             "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
                           },
                           body: JSON.stringify({
                             title,
@@ -368,6 +381,11 @@ export default function CalendarPage() {
                       if (!date) return alert("Please select a date first!");
 
                       try {
+                        const token = localStorage.getItem("token");
+                        if (!token) {
+                          console.log("No token found in localStorage");
+                          return;
+                        }
                         const res = await fetch(
                           `http://localhost:5062/api/Holiday/${
                             new Date(date.getTime() + 19800000)
@@ -376,6 +394,9 @@ export default function CalendarPage() {
                           }`,
                           {
                             method: "DELETE",
+                            headers: {
+                              Authorization: `Bearer ${token}`,
+                            },
                           }
                         );
 

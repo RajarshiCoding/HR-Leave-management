@@ -160,7 +160,7 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
                   disabled={(date) => {
                     if (!startDate) return true;
                     const maxDate = new Date(startDate);
-                    maxDate.setDate(startDate.getDate() + 20); // +30 days
+                    maxDate.setDate(startDate.getDate() + 20); // +20 days
                     return date < startDate || date > maxDate;
                   }}
                 />
