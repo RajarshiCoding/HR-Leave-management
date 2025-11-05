@@ -60,15 +60,23 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
         },
         body: JSON.stringify(leaveData),
       });
-
-      if (!response.ok) throw new Error(`Error ${response.status}`);
+      console.log(response, response.status, response.statusText);
+      if (response.status == 400) {
+        alert("Too many Leave Requested!!");
+        throw new Error(`Error ${response.status}`);
+      }
+      if (!response.ok) {
+        alert("Failed to submit leave.");
+        throw new Error(`Error ${response.status}`);
+      }
 
       alert("Leave submitted successfully!");
       onClose(); // close dialog
       window.location.reload(); // refresh page
     } catch (error: any) {
       console.error(error);
-      alert("Failed to submit leave.");
+      // alert("Failed to submit leave.");
+      onClose();
     }
   };
 

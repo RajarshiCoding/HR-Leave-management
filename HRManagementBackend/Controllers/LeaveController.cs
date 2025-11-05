@@ -51,16 +51,35 @@ namespace HRManagementBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> AddLeave([FromBody] LeaveRequest leave)
         {
-            if (leave == null)
-                return BadRequest(new { message = "Invalid leave request data" });
+            try
+            {
+                if (leave == null)
+                    return BadRequest(new { message = "Invalid leave request data" });
 
-            // Set default values
-            leave.Status = "Pending";
-            leave.AppliedOn = DateTime.UtcNow;
+                // Set default values
+                leave.Status = "Pending";
+                leave.AppliedOn = DateTime.UtcNow;
+                var result = await _leaveService.AddLeaveAsync(leave);
 
-            var requestId = await _leaveService.AddLeaveAsync(leave);
-            return CreatedAtAction(nameof(GetLeaveById), new { requestId }, new { requestId });
+                if (result > 0)
+                    return CreatedAtAction(nameof(GetLeaveById), new { requestId = result }, new { requestId = result });
+
+                else if (result == 0)
+                    return NoContent(); // 204 - no data inserted
+
+                else if (result == -1)
+                    return BadRequest(new { message = "Failed to add leave request. Invalid data or duplicate entry." });
+
+                else
+                    return StatusCode(500, new { message = "Unexpected result from AddLeaveAsync." });
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex);
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
+
 
         // PUT: api/leave/{requestId}
         [Authorize(Roles = "HR")]

@@ -59,7 +59,18 @@ namespace HRManagementBackend.Services
 
             // ✅ Get all holidays
             var getHolidayquery = @"SELECT * FROM holidays ORDER BY ""Date""";
+            var checkQuery = @"SELECT ""NoOfDays"" FROM leave_requests WHERE ""RequestId"" = @Id;";
+            // ✅ Insert leave request
+            var query = @"
+                INSERT INTO leave_requests
+                (""EmpId"", ""StartDate"", ""EndDate"", ""NoOfDays"", ""Reason"", ""Status"", ""AppliedOn"") 
+                VALUES
+                (@EmpId, @StartDate, @EndDate, @NoOfDays, @Reason, @Status, @AppliedOn) 
+                RETURNING ""RequestId"";
+            ";
+
             using var connection = _context.CreateConnection();
+
             var holidays = await connection.QueryAsync<Holiday>(getHolidayquery);
 
             var holidayDates = holidays.Select(h => h.Date.Date).ToHashSet();
@@ -81,20 +92,18 @@ namespace HRManagementBackend.Services
                 currentDate = currentDate.AddDays(1);
             }
 
-            // ✅ Set computed days in the leave model
-            leave.NoOfDays = workingDays;
-            leave.AppliedOn = DateTime.Now;
-
-            // ✅ Insert leave request
-            var query = @"
-                INSERT INTO leave_requests
-                (""EmpId"", ""StartDate"", ""EndDate"", ""NoOfDays"", ""Reason"", ""Status"", ""AppliedOn"") 
-                VALUES
-                (@EmpId, @StartDate, @EndDate, @NoOfDays, @Reason, @Status, @AppliedOn) 
-                RETURNING ""RequestId"";
-            ";
-
-            return await connection.ExecuteScalarAsync<int>(query, leave);
+            var checkNoOfDays = await connection.QuerySingleOrDefaultAsync<int>(checkQuery, new { Id = leave.RequestId });
+            if(checkNoOfDays >= workingDays)
+            {
+                // ✅ Set computed days in the leave model
+                leave.NoOfDays = workingDays;
+                leave.AppliedOn = DateTime.Now;
+                return await connection.ExecuteScalarAsync<int>(query, leave);
+            }
+            else
+            {
+                return -1;
+            }
         }
 
 
