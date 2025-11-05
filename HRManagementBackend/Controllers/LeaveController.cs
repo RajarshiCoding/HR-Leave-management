@@ -21,8 +21,15 @@ namespace HRManagementBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllLeaves()
         {
-            var leaves = await _leaveService.GetAllLeavesAsync();
-            return Ok(leaves);
+            try
+            {
+                var leaves = await _leaveService.GetAllLeavesAsync();
+                return Ok(leaves);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
 
         // GET: api/leave/{requestId}
@@ -30,11 +37,17 @@ namespace HRManagementBackend.Controllers
         [HttpGet("{requestId}")]
         public async Task<IActionResult> GetLeaveById(int requestId)
         {
-            var leave = await _leaveService.GetLeaveByIdAsync(requestId);
-            if (leave == null)
-                return NotFound(new { message = "Leave request not found" });
-
-            return Ok(leave);
+            try
+            {
+                var leave = await _leaveService.GetLeaveByIdAsync(requestId);
+                if (leave == null)
+                    return NotFound(new { message = "Leave request not found" });
+                return Ok(leave);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
 
         // GET: api/leave/employee/{empId}
@@ -42,8 +55,15 @@ namespace HRManagementBackend.Controllers
         [HttpGet("employee/{empId}")]
         public async Task<IActionResult> GetLeavesByEmployee(int empId)
         {
-            var leaves = await _leaveService.GetLeavesByEmployeeIdAsync(empId);
-            return Ok(leaves);
+            try
+            {
+                var leaves = await _leaveService.GetLeavesByEmployeeIdAsync(empId);
+                return Ok(leaves);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
 
         // POST: api/leave
@@ -75,7 +95,7 @@ namespace HRManagementBackend.Controllers
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine(ex);
+                // System.Console.WriteLine(ex);
                 return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
             }
         }
@@ -86,21 +106,28 @@ namespace HRManagementBackend.Controllers
         [HttpPut("{requestId}")]
         public async Task<IActionResult> UpdateLeaveStatus(int requestId, [FromBody] LeaveStatusUpdateDto dto)
         {
-            if (dto == null)
-                return BadRequest(new { message = "Invalid status data" });
+            try
+            {
+                if (dto == null)
+                    return BadRequest(new { message = "Invalid status data" });
 
-            var leave = await _leaveService.GetLeaveByIdAsync(requestId);
-            if (leave == null)
-                return NotFound(new { message = "Leave request not found" });
+                var leave = await _leaveService.GetLeaveByIdAsync(requestId);
+                if (leave == null)
+                    return NotFound(new { message = "Leave request not found" });
 
-            if (dto.Status != null) leave.Status = dto.Status;
-            if (dto.HrNote != null) leave.HrNote = dto.HrNote;
+                if (dto.Status != null) leave.Status = dto.Status;
+                if (dto.HrNote != null) leave.HrNote = dto.HrNote;
 
-            var updated = await _leaveService.UpdateLeaveStatusAsync(leave);
-            if (!updated)
-                return NotFound(new { message = "Leave request not found" });
+                var updated = await _leaveService.UpdateLeaveStatusAsync(leave);
+                if (!updated)
+                    return NotFound(new { message = "Leave request not found" });
 
-            return NoContent();
+                return NoContent();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
         
         // GET: api/leave/update/{requestId}
@@ -108,10 +135,17 @@ namespace HRManagementBackend.Controllers
         [HttpPut("update/{requestId}")]
         public async Task<IActionResult> UpdateLeaveCounter(int requestId, [FromBody] int days)
         {
-            var updated = await _leaveService.UpdateLeaveCounterAsync(requestId,days);
-            if (!updated)
-                return NotFound(new { message = "Cannot update!!" });
-            return NoContent();
+            try
+            {
+                var updated = await _leaveService.UpdateLeaveCounterAsync(requestId, days);
+                if (!updated)
+                    return NotFound(new { message = "Cannot update!!" });
+                return NoContent();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
 
         // GET: api/leave/isAny
@@ -119,8 +153,15 @@ namespace HRManagementBackend.Controllers
         [HttpGet("isAny")]
         public async Task<IActionResult> HasPendingLeaves()
         {
-            var hasPending = await _leaveService.HasPendingRequestsAsync();
-            return Ok(new { hasPending });
+            try
+            {
+                var hasPending = await _leaveService.HasPendingRequestsAsync();
+                return Ok(new { hasPending });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
     }
 }

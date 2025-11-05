@@ -18,87 +18,113 @@ namespace HRManagementBackend.Controllers
             _authService = authService;
         }
 
-
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] EmployeeLoginDto dto)
         {
-            if (dto == null || string.IsNullOrEmpty(dto.Email) || string.IsNullOrEmpty(dto.Password))
-                return BadRequest(new { message = "Email and password are required" });
-
-            var token = await _authService.LoginAsync(dto.Email, dto.Password);
-            var empInfo = await _authService.GetNameAsync(dto.Email);
-
-            // Console.WriteLine(empInfo.EmpId);
-            
-            if (empInfo == null)
-                return NotFound(new { message = "User not found" });
-            
-            if (token == null)
-                return Unauthorized(new { message = "Invalid credentials" });
-
-            return Ok(new
+            try
             {
-                message = "Login successful",
-                token,
-                empInfo.Name,
-                empInfo.Designation,
-                empInfo.EmpId
-            });
-        }
+                if (dto == null || string.IsNullOrEmpty(dto.Email) || string.IsNullOrEmpty(dto.Password))
+                    return BadRequest(new { message = "Email and password are required" });
 
+                var token = await _authService.LoginAsync(dto.Email, dto.Password);
+                var empInfo = await _authService.GetNameAsync(dto.Email);
+
+                if (empInfo == null)
+                    return NotFound(new { message = "User not found" });
+
+                if (token == null)
+                    return Unauthorized(new { message = "Invalid credentials" });
+
+                return Ok(new
+                {
+                    message = "Login successful",
+                    token,
+                    empInfo.Name,
+                    empInfo.Designation,
+                    empInfo.EmpId
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
+        }
 
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            if (request == null || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-                return BadRequest(new { message = "Invalid registration data" });
+            try
+            {
+                if (request == null || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+                    return BadRequest(new { message = "Invalid registration data" });
 
-            var result = await _authService.RegisterAsync(request);
+                var result = await _authService.RegisterAsync(request);
 
-            if (!result)
-                return BadRequest(new { message = "Email already exists" });
+                if (!result)
+                    return BadRequest(new { message = "Email already exists" });
 
-            return Ok(new { message = "User registered successfully" });
+                return Ok(new { message = "User registered successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Authorize()
         {
-            var role = User.FindFirst(ClaimTypes.Role)?.Value;
-            var name = User.Identity?.Name;
-            return Ok(new
+            try
             {
-                message = "Authorized",
-                role,
-                name
-            });
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+                var name = User.Identity?.Name;
+
+                return Ok(new
+                {
+                    message = "Authorized",
+                    role,
+                    name
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
+
         [HttpPut("changepass")]
         [Authorize]
         public async Task<IActionResult> ChangePass([FromBody] ChangePasswordDto dto)
         {
-            if (dto == null || dto.EmpId <= 0 || 
-                string.IsNullOrEmpty(dto.OldPassword) || string.IsNullOrEmpty(dto.NewPassword))
+            try
             {
-                return BadRequest(new { message = "Employee ID, old password, and new password are required." });
+                if (dto == null || dto.EmpId <= 0 ||
+                    string.IsNullOrEmpty(dto.OldPassword) || string.IsNullOrEmpty(dto.NewPassword))
+                {
+                    return BadRequest(new { message = "Employee ID, old password, and new password are required." });
+                }
+
+                var userData = await _authService.GetEmployee(dto.EmpId);
+                if (userData == null)
+                    return NotFound(new { message = "User not found." });
+
+                var rowsAffected = await _authService.VerifyAndChangePassword(userData, dto.OldPassword, dto.NewPassword);
+
+                if (rowsAffected == 0)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to update password. Check old password or database error." });
+
+                return Ok(new
+                {
+                    message = "Password changed successfully!"
+                });
             }
-
-            var userData = await _authService.GetEmployee(dto.EmpId);
-            if (userData == null)
-                return NotFound(new { message = "User not found." });
-
-            var rowsAffected = await _authService.VerifyAndChangePassword(userData, dto.OldPassword, dto.NewPassword);
-
-            if (rowsAffected == 0)
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to update password. Check old password or database error." });
-
-            return Ok(new
+            catch (Exception ex)
             {
-                message = "Password changed successfully!"
-            });
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
         }
-
     }
 }

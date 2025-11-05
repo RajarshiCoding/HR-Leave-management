@@ -5,8 +5,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using QuestPDF.Infrastructure;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 QuestPDF.Settings.License = LicenseType.Community;
 
@@ -77,6 +79,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+
+        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+        if (exceptionHandlerPathFeature?.Error != null)
+        {
+            var error = new
+            {
+                message = "An unexpected error occurred. Please try again later.",
+                detail = exceptionHandlerPathFeature.Error.Message
+            };
+
+            await context.Response.WriteAsJsonAsync(error);
+        }
+    });
+});
+
 
 // Pipeline
 if (app.Environment.IsDevelopment())

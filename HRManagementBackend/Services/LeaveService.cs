@@ -17,12 +17,16 @@ namespace HRManagementBackend.Services
         // Get all leave requests
         public async Task<IEnumerable<LeaveRequest>> GetAllLeavesAsync()
         {
-            var query = "SELECT lr.*, e.\"Name\" FROM leave_requests lr JOIN employees e ON lr.\"EmpId\" = e.\"EmpId\" WHERE lr.\"Status\" = 'Pending';";
-
-
-            // Console.WriteLine(query);
-            using var connection = _context.CreateConnection();
-            return await connection.QueryAsync<LeaveRequest>(query);
+            var query = @"SELECT lr.*, e.""Name"" FROM leave_requests lr JOIN employees e ON lr.""EmpId"" = e.""EmpId"" WHERE lr.""Status"" = 'Pending';";
+            try
+            {
+                using var connection = _context.CreateConnection();
+                return await connection.QueryAsync<LeaveRequest>(query);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to connect with DB Please try again later.", ex);
+            }
         }
 
         // Get leave by request ID
@@ -38,17 +42,30 @@ namespace HRManagementBackend.Services
                             ON lr.""EmpId"" = e.""EmpId""
                         WHERE lr.""RequestId"" = @Id;
                         ";
-
-            using var connection = _context.CreateConnection();
-            return await connection.QueryFirstOrDefaultAsync<LeaveRequest>(query, new { Id = requestId });
+            try
+            {    
+                using var connection = _context.CreateConnection();
+                return await connection.QueryFirstOrDefaultAsync<LeaveRequest>(query, new { Id = requestId });
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to connect with DB Please try again later.", ex);
+            }
         }
 
         // Get leave requests by employee ID
         public async Task<IEnumerable<LeaveRequest>> GetLeavesByEmployeeIdAsync(int empId)
         {
             var query = @"SELECT * FROM leave_requests WHERE ""EmpId"" = @Id";
-            using var connection = _context.CreateConnection();
-            return await connection.QueryAsync<LeaveRequest>(query, new { Id = empId });
+            try
+            {
+                using var connection = _context.CreateConnection();
+                return await connection.QueryAsync<LeaveRequest>(query, new { Id = empId });
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to connect with DB Please try again later.", ex);
+            }
         }
 
         // Add new leave request
@@ -68,41 +85,48 @@ namespace HRManagementBackend.Services
                 (@EmpId, @StartDate, @EndDate, @NoOfDays, @Reason, @Status, @AppliedOn) 
                 RETURNING ""RequestId"";
             ";
-
-            using var connection = _context.CreateConnection();
-
-            var holidays = await connection.QueryAsync<Holiday>(getHolidayquery);
-
-            var holidayDates = holidays.Select(h => h.Date.Date).ToHashSet();
-
-            // ✅ Calculate working days
-            int workingDays = 0;
-            DateTime currentDate = leave.StartDate.Date;
-
-            while (currentDate <= leave.EndDate.Date)
+            
+            try
             {
-                bool isWeekend = currentDate.DayOfWeek == DayOfWeek.Saturday ||
-                                currentDate.DayOfWeek == DayOfWeek.Sunday;
+                using var connection = _context.CreateConnection();
 
-                bool isHoliday = holidayDates.Contains(currentDate);
+                var holidays = await connection.QueryAsync<Holiday>(getHolidayquery);
 
-                if (!isWeekend && !isHoliday)
-                    workingDays++;
+                var holidayDates = holidays.Select(h => h.Date.Date).ToHashSet();
 
-                currentDate = currentDate.AddDays(1);
+                // ✅ Calculate working days
+                int workingDays = 0;
+                DateTime currentDate = leave.StartDate.Date;
+
+                while (currentDate <= leave.EndDate.Date)
+                {
+                    bool isWeekend = currentDate.DayOfWeek == DayOfWeek.Saturday ||
+                                    currentDate.DayOfWeek == DayOfWeek.Sunday;
+
+                    bool isHoliday = holidayDates.Contains(currentDate);
+
+                    if (!isWeekend && !isHoliday)
+                        workingDays++;
+
+                    currentDate = currentDate.AddDays(1);
+                }
+
+                var checkNoOfDays = await connection.QuerySingleOrDefaultAsync<int>(checkQuery, new { Id = leave.RequestId });
+                if(checkNoOfDays >= workingDays)
+                {
+                    // ✅ Set computed days in the leave model
+                    leave.NoOfDays = workingDays;
+                    leave.AppliedOn = DateTime.Now;
+                    return await connection.ExecuteScalarAsync<int>(query, leave);
+                }
+                else
+                {
+                    return -1;
+                }
             }
-
-            var checkNoOfDays = await connection.QuerySingleOrDefaultAsync<int>(checkQuery, new { Id = leave.RequestId });
-            if(checkNoOfDays >= workingDays)
+            catch (Exception ex)
             {
-                // ✅ Set computed days in the leave model
-                leave.NoOfDays = workingDays;
-                leave.AppliedOn = DateTime.Now;
-                return await connection.ExecuteScalarAsync<int>(query, leave);
-            }
-            else
-            {
-                return -1;
+                throw new ApplicationException("Failed to connect with DB Please try again later.", ex);
             }
         }
 
@@ -116,10 +140,16 @@ namespace HRManagementBackend.Services
                 WHERE ""RequestId"" = @RequestId;
             ";
 
-
-            using var connection = _context.CreateConnection();
-            var affectedRows = await connection.ExecuteAsync(query, leave);
-            return affectedRows > 0;
+            try
+            {
+                using var connection = _context.CreateConnection();
+                var affectedRows = await connection.ExecuteAsync(query, leave);
+                return affectedRows > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to connect with DB Please try again later.", ex);
+            }
         }
 
 
@@ -130,20 +160,33 @@ namespace HRManagementBackend.Services
                SET ""LeaveBalance"" = ""LeaveBalance"" - @Days WHERE ""EmpId"" = (
                SELECT ""EmpId"" FROM leave_requests WHERE ""RequestId"" = @Id);";
 
-
-            using var connection = _context.CreateConnection();
-            var affectedRows = await connection.ExecuteAsync(query, new { Id = requestId, Days = days });
-            // System.Console.WriteLine(affectedRows);
-            return affectedRows > 0;
+            try
+            {   
+                using var connection = _context.CreateConnection();
+                var affectedRows = await connection.ExecuteAsync(query, new { Id = requestId, Days = days });
+                // System.Console.WriteLine(affectedRows);
+                return affectedRows > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to connect with DB Please try again later.", ex);
+            }
         }
 
         // Check if any pending requests exist
         public async Task<bool> HasPendingRequestsAsync()
         {
             var query = @"SELECT COUNT(*) FROM leave_requests WHERE ""Status"" = 'Pending'";
-            using var connection = _context.CreateConnection();
-            var count = await connection.ExecuteScalarAsync<int>(query);
-            return count > 0;
+            try
+            {   
+                using var connection = _context.CreateConnection();
+                var count = await connection.ExecuteScalarAsync<int>(query);
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Failed to connect with DB Please try again later.", ex);
+            }
         }
     }
 }
