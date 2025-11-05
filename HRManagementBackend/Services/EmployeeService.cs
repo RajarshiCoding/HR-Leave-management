@@ -23,8 +23,8 @@ namespace HRManagementBackend.Services
                     CASE 
                         WHEN CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate""
                             AND lr.""Status"" = 'Approved'
-                        THEN 'Inactive'
-                        ELSE 'Active'
+                        THEN 'On Leave'
+                        ELSE 'In Office'
                     END AS ""Status""
                 FROM employees e
                 LEFT JOIN leave_requests lr
@@ -51,8 +51,8 @@ namespace HRManagementBackend.Services
                     CASE 
                         WHEN CURRENT_DATE BETWEEN lr.""StartDate"" AND lr.""EndDate""
                             AND lr.""Status"" = 'Approved'
-                        THEN 'Inactive'
-                        ELSE 'Active'
+                        THEN 'On Leave'
+                        ELSE 'In Office'
                     END AS ""Status""
                 FROM employees e
                 LEFT JOIN leave_requests lr

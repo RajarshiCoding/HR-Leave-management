@@ -202,7 +202,7 @@ export function EmployeeDetail({ empId, open, onClose }: EmployeeDetailProps) {
             <p className="font-medium">Status:</p>
             <p
               className={
-                employee.status === "Active"
+                employee.status === "In Office"
                   ? "text-green-600 font-medium"
                   : "text-red-500 font-medium"
               }

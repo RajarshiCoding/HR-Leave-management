@@ -117,7 +117,7 @@ const Dashboard: React.FC = () => {
                       </TableCell>
                       <TableCell
                         className={
-                          emp.status == "Active"
+                          emp.status == "In Office"
                             ? "text-green-600"
                             : "text-red-500"
                         }
