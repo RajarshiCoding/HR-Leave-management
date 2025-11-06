@@ -9,6 +9,7 @@ import {
   ClipboardList,
   List,
   LockKeyholeOpen,
+  KeyRound,
 } from "lucide-react";
 import {
   Tooltip,
@@ -23,6 +24,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import VarsDialog from "./ui/varsDialog";
 
 interface SidebarProps {
   isAdmin?: boolean;
@@ -33,6 +35,7 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
   const location = useLocation();
   const [isAny, setisAny] = useState<Boolean>();
   const [empId, setEmpId] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
 
   // State for change password dialog
   const [changePassOpen, setChangePassOpen] = useState(false);
@@ -241,6 +244,29 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
             <p>Change Password</p>
           </TooltipContent>
         </Tooltip>
+
+        {/* Update variables (Admin only) */}
+        {isAdmin && (
+          <>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="rounded-full w-12 h-12 p-0 flex items-center justify-center"
+                  onClick={() => setOpen(true)}
+                >
+                  <KeyRound />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Edit System Variables</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* The dialog */}
+            <VarsDialog open={open} onOpenChange={setOpen} />
+          </>
+        )}
       </div>
 
       {/* Change Password Dialog */}

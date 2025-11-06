@@ -74,28 +74,35 @@ namespace HRManagementBackend.Services
             if (leave.EndDate < leave.StartDate)
                 throw new ArgumentException("End date must be greater than or equal to start date.");
 
-            // ✅ Get all holidays
-            var getHolidayquery = @"SELECT * FROM holidays ORDER BY ""Date""";
-            // var checkQuery = @"SELECT ""NoOfDays"" FROM leave_requests WHERE ""RequestId"" = @Id;";
+            var getHolidayQuery = @"SELECT * FROM holidays ORDER BY ""Date"";";
+            var getMaxLeaveDaysQuery = @"SELECT ""MaxLeaveDays"" FROM customVar;";
             var checkQuery = @"SELECT ""LeaveBalance"" FROM employees WHERE ""EmpId"" = @Id;";
-            // ✅ Insert leave request
-            var query = @"
+
+            var insertQuery = @"
                 INSERT INTO leave_requests
                 (""EmpId"", ""StartDate"", ""EndDate"", ""NoOfDays"", ""Reason"", ""Status"", ""AppliedOn"") 
                 VALUES
                 (@EmpId, @StartDate, @EndDate, @NoOfDays, @Reason, @Status, @AppliedOn) 
                 RETURNING ""RequestId"";
             ";
-            
+
             try
             {
                 using var connection = _context.CreateConnection();
 
-                var holidays = await connection.QueryAsync<Holiday>(getHolidayquery);
-
+                // 1️⃣ Get holidays
+                var holidays = await connection.QueryAsync<Holiday>(getHolidayQuery);
                 var holidayDates = holidays.Select(h => h.Date.Date).ToHashSet();
 
-                // ✅ Calculate working days
+                // 2️⃣ Get max allowed leave days from table
+                int maxAllowedDays = await connection.QueryFirstOrDefaultAsync<int>(getMaxLeaveDaysQuery);
+                if (maxAllowedDays <= 0)
+                {
+                    maxAllowedDays = 10; // default fallback
+                    System.Console.WriteLine("No valid MaxLeaveDays found in customVar. Using default value: 10");
+                }
+
+                // 3️⃣ Calculate working days (excluding weekends & holidays)
                 int workingDays = 0;
                 DateTime currentDate = leave.StartDate.Date;
 
@@ -112,26 +119,29 @@ namespace HRManagementBackend.Services
                     currentDate = currentDate.AddDays(1);
                 }
 
-                var checkNoOfDays = await connection.QuerySingleOrDefaultAsync<int>(checkQuery, new { Id = leave.EmpId });
-                System.Console.WriteLine(checkNoOfDays);
-                System.Console.WriteLine(workingDays);
-                if(checkNoOfDays >= workingDays && workingDays <= 10)
+                // 4️⃣ Check employee leave balance
+                int currentBalance = await connection.QuerySingleOrDefaultAsync<int>(checkQuery, new { Id = leave.EmpId });
+
+                // 5️⃣ Validate conditions
+                if (currentBalance >= workingDays && workingDays <= maxAllowedDays)
                 {
-                    // ✅ Set computed days in the leave model
                     leave.NoOfDays = workingDays;
                     leave.AppliedOn = DateTime.Now;
-                    return await connection.ExecuteScalarAsync<int>(query, leave);
+
+                    return await connection.ExecuteScalarAsync<int>(insertQuery, leave);
                 }
                 else
                 {
+                    // Invalid request (exceeds balance or max limit)
                     return -1;
                 }
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Failed to connect with DB Please try again later.", ex);
+                throw new ApplicationException("Failed to connect with DB. Please try again later.", ex);
             }
         }
+
 
 
         // Update leave request status (approve/reject)

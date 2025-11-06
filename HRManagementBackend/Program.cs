@@ -46,6 +46,8 @@ builder.Services.AddScoped<IHolidayService, HolidayService>();
 builder.Services.AddScoped<ILeaveService, LeaveService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
+builder.Services.AddScoped<CustomVarService>();
+builder.Services.AddSingleton<IJobTracker, JobTracker>();
 
 // 🔹 Add CORS for React
 builder.Services.AddCors(options =>
