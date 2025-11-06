@@ -52,7 +52,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactAppPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")   // your React app URL
+        policy.WithOrigins("http://localhost:5173")   // My React app URL
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -103,15 +103,13 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-
-// Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 // 🔹 Use the CORS policy before authentication
 app.UseCors("ReactAppPolicy");

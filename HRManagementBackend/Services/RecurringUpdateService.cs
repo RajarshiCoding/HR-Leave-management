@@ -42,29 +42,43 @@ public class RecurringUpdateService : BackgroundService
 
     private async Task UpdateMonthlyAsync()
     {
-        using var connection = _context.CreateConnection();
+        try
+        {
+            using var connection = _context.CreateConnection();
 
-        var query = @"UPDATE employees
-                      SET ""LeaveBalance"" = ""LeaveBalance"" + 2;";
+            var query = @"UPDATE employees
+                          SET ""LeaveBalance"" = ""LeaveBalance"" + 2;";
 
-        int rows = await connection.ExecuteAsync(query);
-        _logger.LogInformation("Monthly update done. {Count} rows affected.", rows);
+            int rows = await connection.ExecuteAsync(query);
+            _logger.LogInformation("Monthly update done successfully. {Count} rows affected.", rows);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred during monthly update.");
+        }
     }
 
     private async Task UpdateYearlyAsync()
     {
-        using var connection = _context.CreateConnection();
+        try
+        {
+            using var connection = _context.CreateConnection();
 
-        var query = @"
-            UPDATE employees
-            SET 
-                ""LeaveTaken"" = 0,
-                ""LeaveBalance"" = CASE 
-                    WHEN ""LeaveBalance"" > 7 THEN 7 
-                    ELSE ""LeaveBalance"" 
-                END;";
+            var query = @"
+                UPDATE employees
+                SET 
+                    ""LeaveTaken"" = 0,
+                    ""LeaveBalance"" = CASE 
+                        WHEN ""LeaveBalance"" > 7 THEN 7 
+                        ELSE ""LeaveBalance"" 
+                    END;";
 
-        int rows = await connection.ExecuteAsync(query);
-        _logger.LogInformation("Annual update done. {Count} rows affected.", rows);
+            int rows = await connection.ExecuteAsync(query);
+            _logger.LogInformation("Annual update done successfully. {Count} rows affected.", rows);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred during annual update.");
+        }
     }
 }
