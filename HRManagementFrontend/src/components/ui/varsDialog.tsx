@@ -70,7 +70,7 @@ export default function VarsDialog({
     }));
 
     try {
-      await axios.post("/api/vars", finalData, {
+      await axios.post("http://localhost:5062/api/vars", finalData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("Variables updated successfully!");
@@ -100,6 +100,7 @@ export default function VarsDialog({
                   type="number"
                   placeholder={String(val)}
                   value={form[key] ?? ""}
+                  min={0}
                   onChange={(e) => handleChange(key, e.target.value)}
                 />
               </div>
