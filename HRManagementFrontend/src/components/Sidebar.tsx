@@ -57,7 +57,7 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const id = localStorage.getItem("empId");
+      // const id = localStorage.getItem("empId");
       const res = await fetch("http://localhost:5062/api/auth/changepass", {
         method: "PUT",
         headers: {
@@ -65,7 +65,7 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          empId: id,
+          empId: empId,
           oldPassword: oldPass,
           newPassword: newPass,
         }),

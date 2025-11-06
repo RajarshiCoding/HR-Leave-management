@@ -8,5 +8,6 @@ namespace HRManagementBackend.Models
         public string Department { get; set; } = string.Empty;
         public string Designation { get; set; } = "Employee"; // or HR/Admin
         public string Contact { get; set; } = string.Empty;
+        public DateTime  DOB { get; set; }     // date of birth 
     }
 }

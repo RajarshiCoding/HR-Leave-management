@@ -67,13 +67,13 @@ namespace HRManagementBackend.Services
                 var checkQuery = @"SELECT COUNT(*) FROM employees WHERE ""Email"" = @Email";
                 var insertQuery = @"
                     INSERT INTO employees 
-                    (""Name"", ""Email"", ""PasswordHash"", ""Department"", ""Designation"", ""Contact"")
-                    VALUES (@Name, @Email, @PasswordHash, @Department, @Designation, @Contact)
+                    (""Name"", ""Email"", ""PasswordHash"", ""Department"", ""Designation"", ""Contact"",""DOB"")
+                    VALUES (@Name, @Email, @PasswordHash, @Department, @Designation, @Contact, @DOB)
                 ";
 
                 using var connection = _context.CreateConnection();
 
-                var exists = await connection.ExecuteScalarAsync<int>(checkQuery, new { request.Email });
+                var exists = await connection.ExecuteScalarAsync<int>(checkQuery, new { Email = request.Email });
                 if (exists > 0)
                     return false;
 
@@ -81,18 +81,20 @@ namespace HRManagementBackend.Services
 
                 await connection.ExecuteAsync(insertQuery, new
                 {
-                    request.Name,
-                    request.Email,
+                    Name = request.Name,
+                    Email = request.Email,
                     PasswordHash = passwordHash,
-                    request.Department,
-                    request.Designation,
-                    request.Contact
+                    Department = request.Department,
+                    Designation = request.Designation,
+                    Contact = request.Contact,
+                    DOB = request.DOB,
                 });
 
                 return true;
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Register error: {ex.InnerException?.Message ?? ex.Message}");
                 throw new ApplicationException("Failed to register user. Please try again later.", ex);
             }
         }

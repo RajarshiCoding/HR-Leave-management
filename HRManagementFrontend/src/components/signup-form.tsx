@@ -29,6 +29,7 @@ export function SignupForm({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [dob, setDob] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -43,12 +44,13 @@ export function SignupForm({
     setLoading(true);
     try {
       const res = await axios.post("http://localhost:5062/api/auth/register", {
-        name,
-        email,
-        password,
+        name: name,
+        email: email,
+        password: password,
         department: "Human Resource", // 🔒 constant
         designation: "HR", // 🔒 constant
         contact: phone,
+        dob: dob,
       });
       if (res.status == 200) {
         const res2 = await axios.post("http://localhost:5062/api/auth/login", {
@@ -72,6 +74,7 @@ export function SignupForm({
       }
     } catch (err: any) {
       console.log(err.response?.data?.message || "Login failed");
+      setLoading(false);
     }
   };
 
@@ -117,6 +120,23 @@ export function SignupForm({
                 maxLength={10}
                 required
                 onChange={(e) => setPhone(e.target.value)}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="dob">Date of Birth</FieldLabel>
+              <Input
+                id="dob"
+                type="date"
+                required
+                max={
+                  new Date(
+                    new Date().setFullYear(new Date().getFullYear() - 18)
+                  )
+                    .toISOString()
+                    .split("T")[0]
+                }
+                onChange={(e) => setDob(e.target.value)}
               />
             </Field>
 

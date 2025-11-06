@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HRManagementBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f0f01e9252d71c8f7328139e0c0adca2babba696")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f5473a432234666ce177eaee894691b93c653d1")]
 [assembly: System.Reflection.AssemblyProductAttribute("HRManagementBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HRManagementBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
