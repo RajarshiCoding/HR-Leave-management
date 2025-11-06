@@ -15,15 +15,30 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 interface SidebarProps {
   isAdmin?: boolean;
 }
+
 export function Sidebar({ isAdmin = true }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isAny, setisAny] = useState<Boolean>();
   const [empId, setEmpId] = useState<string | null>(null);
+
+  // State for change password dialog
+  const [changePassOpen, setChangePassOpen] = useState(false);
+  const [oldPass, setOldPass] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
@@ -33,39 +48,68 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
       navigate("/", { replace: false });
     }
   };
+
+  const handleChangePass = async () => {
+    setChangePassOpen(true);
+  };
+
+  const submitChangePass = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const id = localStorage.getItem("empId");
+      const res = await fetch("http://localhost:5062/api/auth/changepass", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          empId: id,
+          oldPassword: oldPass,
+          newPassword: newPass,
+        }),
+      });
+
+      if (res.ok) {
+        setChangePassOpen(false);
+        handleLogout(); // logout on success
+      } else {
+        setChangePassOpen(false); // just close on
+      }
+    } catch (err) {
+      console.error(err);
+      setChangePassOpen(false);
+    } finally {
+      setLoading(false);
+      setOldPass("");
+      setNewPass("");
+    }
+  };
+
   useEffect(() => {
     const empId = localStorage.getItem("empId");
     setEmpId(empId);
     const fetchEmployeeData = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) {
-          console.log("No token found in localStorage");
-          return;
-        }
+        if (!token) return;
 
         const isAnyResponse = await fetch(
           "http://localhost:5062/api/leave/isAny",
           {
             method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        if (!isAnyResponse.ok) {
+        if (!isAnyResponse.ok)
           throw new Error(
             `Error ${isAnyResponse.status}: ${isAnyResponse.statusText}`
           );
-        }
 
         const data = await isAnyResponse.json();
-        console.log(data, data.hasPending);
         setisAny(data.hasPending);
-
-        // const data = await response.json();
-        // console.log("Employee data:", data);
       } catch (err: any) {
         console.error("Fetch error:", err.message);
       }
@@ -117,6 +161,7 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
               >
                 <CalendarDays className="mr-2 h-5 w-5" /> Calendar
               </Button>
+
               <Button
                 variant={
                   location.pathname === "/dashboard/employee"
@@ -124,10 +169,7 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
                     : "ghost"
                 }
                 className="justify-start"
-                onClick={() => {
-                  navigate("/dashboard/employee");
-                  console.log(empId);
-                }}
+                onClick={() => navigate("/dashboard/employee")}
               >
                 <List className="mr-2 h-5 w-5" /> Details
               </Button>
@@ -141,7 +183,6 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
               </Button>
             </>
           ) : (
-            // employee part
             <>
               <Button
                 variant={
@@ -150,10 +191,7 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
                     : "ghost"
                 }
                 className="justify-start"
-                onClick={() => {
-                  navigate("/dashboard/employee");
-                  console.log(empId);
-                }}
+                onClick={() => navigate("/dashboard/employee")}
               >
                 <Home className="mr-2 h-5 w-5" /> Home
               </Button>
@@ -170,8 +208,9 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
         </div>
       </div>
 
-      {/* Bottom Profile Icon */}
-      <div className="px-6">
+      {/* Bottom Profile Icons */}
+      <div className="px-6 flex gap-2">
+        {/* Logout */}
         <Tooltip>
           <TooltipTrigger>
             <Button
@@ -179,7 +218,6 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
               className="rounded-full w-12 h-12 p-0 flex items-center justify-center"
               onClick={handleLogout}
             >
-              {/* <UserRound className="h-6 w-6" /> */}
               <LogOut className="h-6 w-6" />
             </Button>
           </TooltipTrigger>
@@ -187,24 +225,58 @@ export function Sidebar({ isAdmin = true }: SidebarProps) {
             <p>Click to log out</p>
           </TooltipContent>
         </Tooltip>
+
+        {/* Change Password */}
         <Tooltip>
           <TooltipTrigger>
             <Button
-              variant={"outline"}
+              variant="outline"
               className="rounded-full w-12 h-12 p-0 flex items-center justify-center"
               onClick={handleChangePass}
             >
-              <LockKeyholeOpen />
+              <LockKeyholeOpen className="h-6 w-6" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Click to log out</p>
+            <p>Change Password</p>
           </TooltipContent>
         </Tooltip>
-        <Button>
-          <LockKeyholeOpen />
-        </Button>
       </div>
+
+      {/* Change Password Dialog */}
+      <Dialog open={changePassOpen} onOpenChange={setChangePassOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-2">
+            <Input
+              type="password"
+              placeholder="Old Password"
+              value={oldPass}
+              onChange={(e) => setOldPass(e.target.value)}
+            />
+            <Input
+              type="password"
+              placeholder="New Password"
+              value={newPass}
+              onChange={(e) => setNewPass(e.target.value)}
+            />
+          </div>
+          <DialogFooter className="mt-4 flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setChangePassOpen(false)}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button onClick={submitChangePass} disabled={loading}>
+              Change
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </aside>
   );
 }
