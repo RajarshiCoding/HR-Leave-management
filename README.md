@@ -37,7 +37,6 @@ This system aims to:
 - The HR Leave Management System (HRLMS) covers the complete leave management lifecycle for both HR administrators and employees.
 - It includes modules for employee registration, leave application, approval workflow, holiday management, and real-time tracking.
 - The system ensures role-based access, allowing HR to manage employees and oversee organizational leave data, while employees can submit and monitor their requests.
-- It also supports notifications, document uploads, and dashboard analytics for enhanced usability and transparency across the organization.
 
 ---
 
@@ -45,7 +44,7 @@ This system aims to:
 
 | Layer               | Technology              |
 | ------------------- | ----------------------- |
-| **Frontend**        | React + Vite + Axios    |
+| **Frontend**        | React + Vite + Shadcn   |
 | **Backend**         | .NET 8 Web API + Dapper |
 | **Database**        | PostgreSQL              |
 | **Authentication**  | JWT Tokens              |
