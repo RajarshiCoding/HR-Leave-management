@@ -78,6 +78,7 @@ function EmpTrack() {
                 <TableRow>
                   {/* <TableHead className="w-[100px]">Invoice</TableHead> */}
                   <TableHead>Applied on</TableHead>
+                  <TableHead className="text-center">Start Date</TableHead>
                   <TableHead className="text-center">End Date</TableHead>
                   <TableHead className="text-center">HR Note</TableHead>
                   <TableHead className="text-center">Reason</TableHead>
@@ -98,6 +99,9 @@ function EmpTrack() {
                     >
                       <TableCell className="font-medium">
                         {new Date(emp.appliedOn).toDateString()}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {new Date(emp.startDate).toDateString()}
                       </TableCell>
                       <TableCell className="text-center">
                         {new Date(emp.endDate).toDateString()}
