@@ -31,14 +31,15 @@ public class RecurringUpdateService : BackgroundService
             {
                 // Run both checks every time the service wakes up.
                 await RunJobIfDueAsync(
+                    "YearlyUpdate",
+                    lastRun => IsYearlyDue(lastRun, DateTime.Now),
+                    UpdateYearlyAsync);
+
+                await RunJobIfDueAsync(
                     "MonthlyUpdate",
                     lastRun => IsMonthlyDue(lastRun, DateTime.Now),
                     UpdateMonthlyAsync);
 
-                await RunJobIfDueAsync(
-                    "YearlyUpdate",
-                    lastRun => IsYearlyDue(lastRun, DateTime.Now),
-                    UpdateYearlyAsync);
             }
             catch (Exception ex)
             {
@@ -75,7 +76,7 @@ public class RecurringUpdateService : BackgroundService
         }
     }
 
-    // Due checks (UTC-based)
+    // Due checks
     private bool IsMonthlyDue(DateTime? lastRun, DateTime nowUtc)
     {
         // due when last run is null OR last run's year/month is earlier than current

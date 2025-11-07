@@ -76,7 +76,15 @@ namespace HRManagementBackend.Services
 
             var getHolidayQuery = @"SELECT * FROM holidays ORDER BY ""Date"";";
             var getMaxLeaveDaysQuery = @"SELECT ""value"" FROM customVar WHERE ""varName"" = 'MaxLeaveDays';";
-            var checkQuery = @"SELECT ""LeaveBalance"" FROM employees WHERE ""EmpId"" = @Id;";
+            var checkBalanceQuery = @"SELECT ""LeaveBalance"" FROM employees WHERE ""EmpId"" = @Id;";
+
+            var overlapCheckQuery = @"
+                SELECT COUNT(*) 
+                FROM leave_requests 
+                WHERE ""EmpId"" = @EmpId
+                AND ""Status"" IN ('Pending', 'Approved')
+                AND (""StartDate"" <= @EndDate AND ""EndDate"" >= @StartDate);
+            ";
 
             var insertQuery = @"
                 INSERT INTO leave_requests
@@ -90,27 +98,21 @@ namespace HRManagementBackend.Services
             {
                 using var connection = _context.CreateConnection();
 
-                // 1️⃣ Get holidays
                 var holidays = await connection.QueryAsync<Holiday>(getHolidayQuery);
                 var holidayDates = holidays.Select(h => h.Date.Date).ToHashSet();
 
-                // 2️⃣ Get max allowed leave days from table
                 int maxAllowedDays = await connection.QueryFirstOrDefaultAsync<int>(getMaxLeaveDaysQuery);
                 if (maxAllowedDays <= 0)
                 {
-                    maxAllowedDays = 10; // default fallback
-                    System.Console.WriteLine("No valid MaxLeaveDays found in customVar. Using default value: 10");
+                    maxAllowedDays = 10; 
+                    Console.WriteLine("No valid MaxLeaveDays found in customVar. Using default value: 10");
                 }
-
-                // 3️⃣ Calculate working days (excluding weekends & holidays)
+                
                 int workingDays = 0;
                 DateTime currentDate = leave.StartDate.Date;
-
                 while (currentDate <= leave.EndDate.Date)
                 {
-                    bool isWeekend = currentDate.DayOfWeek == DayOfWeek.Saturday ||
-                                    currentDate.DayOfWeek == DayOfWeek.Sunday;
-
+                    bool isWeekend = currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday;
                     bool isHoliday = holidayDates.Contains(currentDate);
 
                     if (!isWeekend && !isHoliday)
@@ -119,10 +121,23 @@ namespace HRManagementBackend.Services
                     currentDate = currentDate.AddDays(1);
                 }
 
-                // 4️⃣ Check employee leave balance
-                int currentBalance = await connection.QuerySingleOrDefaultAsync<int>(checkQuery, new { Id = leave.EmpId });
+                
+                int overlapping = await connection.ExecuteScalarAsync<int>(overlapCheckQuery, new
+                {
+                    EmpId = leave.EmpId,
+                    StartDate = leave.StartDate,
+                    EndDate = leave.EndDate
+                });
 
-                // 5️⃣ Validate conditions
+                if (overlapping > 0)
+                {
+                    return -1;
+                }
+
+                
+                int currentBalance = await connection.QuerySingleOrDefaultAsync<int>(checkBalanceQuery, new { Id = leave.EmpId });
+
+                
                 if (currentBalance >= workingDays && workingDays <= maxAllowedDays)
                 {
                     leave.NoOfDays = workingDays;
@@ -132,7 +147,7 @@ namespace HRManagementBackend.Services
                 }
                 else
                 {
-                    // Invalid request (exceeds balance or max limit)
+                    
                     return -1;
                 }
             }
@@ -140,7 +155,7 @@ namespace HRManagementBackend.Services
             {
                 throw new ApplicationException("Failed to connect with DB. Please try again later.", ex);
             }
-        }
+}
 
 
 

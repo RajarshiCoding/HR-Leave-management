@@ -64,7 +64,7 @@ export function LeaveRequestDialog({ open, onClose }: LeaveRequestDialogProps) {
       });
       console.log(response, response.status, response.statusText);
       if (response.status == 400) {
-        alert("Too many Leave Requested!!");
+        alert("Too many Leave Requested or Leave Overlapped!!");
         throw new Error(`Error ${response.status}`);
       }
       if (!response.ok) {
