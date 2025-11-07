@@ -28,13 +28,12 @@ namespace HRManagementBackend.Controllers
                     return BadRequest(new { message = "Email and password are required" });
 
                 var token = await _authService.LoginAsync(dto.Email, dto.Password);
-                var empInfo = await _authService.GetNameAsync(dto.Email);
-
-                if (empInfo == null)
-                    return NotFound(new { message = "User not found" });
-
                 if (token == null)
                     return Unauthorized(new { message = "Invalid credentials" });
+
+                var empInfo = await _authService.GetNameAsync(dto.Email);
+                if (empInfo == null)
+                    return NotFound(new { message = "User not found" });
 
                 return Ok(new
                 {

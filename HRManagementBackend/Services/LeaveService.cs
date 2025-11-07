@@ -75,7 +75,7 @@ namespace HRManagementBackend.Services
                 throw new ArgumentException("End date must be greater than or equal to start date.");
 
             var getHolidayQuery = @"SELECT * FROM holidays ORDER BY ""Date"";";
-            var getMaxLeaveDaysQuery = @"SELECT ""MaxLeaveDays"" FROM customVar;";
+            var getMaxLeaveDaysQuery = @"SELECT ""value"" FROM customVar WHERE ""varName"" = 'MaxLeaveDays';";
             var checkQuery = @"SELECT ""LeaveBalance"" FROM employees WHERE ""EmpId"" = @Id;";
 
             var insertQuery = @"

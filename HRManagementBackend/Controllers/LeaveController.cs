@@ -95,7 +95,7 @@ namespace HRManagementBackend.Controllers
             }
             catch (Exception ex)
             {
-                // System.Console.WriteLine(ex);
+                System.Console.WriteLine(ex);
                 return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
             }
         }

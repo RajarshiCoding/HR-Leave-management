@@ -95,7 +95,8 @@ public class RecurringUpdateService : BackgroundService
         {
             using var connection = _context.CreateConnection();
 
-            var getMonthlyLeaveQuery = @"SELECT ""MonthlyUpdateDay"" FROM customVar;";
+            var getMonthlyLeaveQuery = @"SELECT ""value"" FROM customVar WHERE ""varName"" = 'MonthlyUpdateDays';";
+
             var updateQuery = @"UPDATE employees
                                 SET ""LeaveBalance"" = ""LeaveBalance"" + @days;";
 
@@ -125,7 +126,7 @@ public class RecurringUpdateService : BackgroundService
             using var connection = _context.CreateConnection();
 
             //Fetch configurable yearly carry-forward limit (if any)
-            var getCarryLimitQuery = @"SELECT ""MaxCarryForward"" FROM customVar;";
+            var getCarryLimitQuery = @"SELECT ""value"" FROM customVar WHERE ""varName"" = 'YearlyResetLimit';";
             int maxCarryForward = await connection.QueryFirstOrDefaultAsync<int>(getCarryLimitQuery);
 
             if (maxCarryForward <= 0)
